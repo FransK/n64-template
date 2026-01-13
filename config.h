@@ -2,25 +2,30 @@
 #ifndef N64BASE_CONFIG_H
 #define N64BASE_CONFIG_H
 
-#define DEBUG 1
+#include "defs.h"
 
-// Initialize USB and isViewer logging
-#if defined(DEBUG) && DEBUG == 1
-#define DEBUG_LOG 1
-#else
-#define DEBUG_LOG 0 // Change this one if you just want debugf enabled
-#endif
+namespace Core
+{
+    // Enable Debug features
+    constexpr bool Debug = true;
 
-// Skip asking the number of players and assume PLAYER_COUNT
-#define SKIP_PLAYERSELECTION 1
+    // Initialize USB and isViewer logging
+    constexpr bool DebugLog = Debug;
 
-// The number of human players
-#define PLAYER_COUNT 1
+    // Initialize RDP debugger. Also requires DebugLog.
+    constexpr bool DebugRDP = false && DebugLog;
 
-// Skip asking the AI difficulty and assume AI_DIFFICULTY
-#define SKIP_DIFFICULTYSELECTION 1
+    // Skip asking the number of players and assume PlayerCount
+    constexpr bool SkipPlayerSelection = true;
 
-// The difficulty of the AI.
-#define AI_DIFFICULTY DIFF_EASY
+    // The number of human players
+    constexpr int PlayerCount = 1;
+
+    // Skip asking the AI difficulty and assume AiDifficulty
+    constexpr bool SkipDifficultySelection = true;
+
+    // The difficulty of the AI.
+    constexpr AiDiff AiDifficulty = DIFF_EASY;
+}
 
 #endif

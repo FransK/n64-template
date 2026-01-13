@@ -25,10 +25,10 @@ namespace Fishing
     constexpr uint8_t COLOR_DIR[4] = {0xFF, 0xAA, 0xAA, 0xFF};
 
     constexpr color_t COLORS[] = {
-        PLAYERCOLOR_1,
-        PLAYERCOLOR_2,
-        PLAYERCOLOR_3,
-        PLAYERCOLOR_4,
+        PlayerColor1,
+        PlayerColor2,
+        PlayerColor3,
+        PlayerColor4,
     };
 
     class Scene
@@ -53,10 +53,10 @@ namespace Fishing
         T3DMat4FP *mMapMatFP{};
         rspq_block_t *mDplMap{};
 
-        Player *mPlayers[MAXPLAYERS]{};
-        PlayerAi *mAIPlayers[MAXPLAYERS]{};
-        InputState mInputState[MAXPLAYERS]{};
-        uint8_t mWinners[MAXPLAYERS]{0};
+        Player *mPlayers[MaxPlayers]{};
+        PlayerAi *mAIPlayers[MaxPlayers]{};
+        InputState mInputState[MaxPlayers]{};
+        uint8_t mWinners[MaxPlayers]{0};
         uint8_t mCurrTopScore{0};
 
         rdpq_font_t *mFontBillboard{};

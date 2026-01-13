@@ -6,6 +6,7 @@ and provides a basic game loop.
 ***************************************************************/
 
 #include <libdragon.h>
+#include <rspq_profile.h>
 #include "config.h"
 #include "core.h"
 #include "code/n64-fishing.h"
@@ -17,10 +18,11 @@ and provides a basic game loop.
 
 int main()
 {
-#if DEBUG_LOG == 1
-    debug_init_isviewer();
-    debug_init_usblog();
-#endif
+    if constexpr (Core::DebugLog)
+    {
+        debug_init_isviewer();
+        debug_init_usblog();
+    }
 
     // Initialize most subsystems
     asset_init_compression(2);
@@ -34,12 +36,13 @@ int main()
     audio_init(32000, 3);
     mixer_init(32);
 
-// Enable RDP debugging
-#if DEBUG_RDP
-    rdpq_debug_start();
-    rdpq_debug_log(true);
-    rspq_profile_start();
-#endif
+    // Enable RDP debugging
+    if constexpr (Core::DebugRDP)
+    {
+        rdpq_debug_start();
+        rdpq_debug_log(true);
+        rspq_profile_start();
+    }
 
     // Initialize the random number generator, then call rand() every
     // frame so to get random behavior also in emulators.
@@ -49,14 +52,14 @@ int main()
     register_VI_handler((void (*)(void))rand);
 
     // Load game
-    bool joinedPlayers[Core::MAXPLAYERS] = {true, false, false, false};
+    bool joinedPlayers[Core::MaxPlayers] = {true, false, false, false};
     Core::core_set_playercount(joinedPlayers);
     Core::core_set_aidifficulty(Core::AiDiff::DIFF_EASY);
 
     while (1)
     {
         float accumulator = 0;
-        const float dt = Core::DELTATIME;
+        const float dt = Core::DeltaTime;
 
         Fishing::init();
 

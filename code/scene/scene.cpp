@@ -33,7 +33,7 @@ namespace Fishing
         rdpq_text_register_font(FONT_BILLBOARD, mFontBillboard);
         mFontText = rdpq_font_load(FS_BASE_PATH "squarewave.font64");
         rdpq_text_register_font(FONT_TEXT, mFontText);
-        for (size_t i = 0; i < MAXPLAYERS; i++)
+        for (size_t i = 0; i < MaxPlayers; i++)
         {
             const rdpq_fontstyle_t style{.color = COLORS[i]};
             rdpq_font_style(mFontText, i, &style);
@@ -68,9 +68,9 @@ namespace Fishing
             mPlayers[i] = new Player(&mCollisionScene, mPlayerModel);
             mPlayers[i]->init(i, startPositions[i], startRotations[i], COLORS[i]);
         }
-        for (uint16_t i = core_get_playercount(); i < MAXPLAYERS; i++)
+        for (uint16_t i = core_get_playercount(); i < MaxPlayers; i++)
         {
-            AIBehavior behavior = (i == MAXPLAYERS - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
+            AIBehavior behavior = (i == MaxPlayers - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
             mAIPlayers[i] = new PlayerAi(&mCollisionScene, mPlayerModel, behavior);
             mAIPlayers[i]->init(i, startPositions[i], startRotations[i], COLORS[i]);
             mPlayers[i] = mAIPlayers[i]->get_player();
@@ -101,7 +101,7 @@ namespace Fishing
             delete mPlayers[i];
             mPlayers[i] = nullptr;
         }
-        for (size_t i = core_get_playercount(); i < MAXPLAYERS; i++)
+        for (size_t i = core_get_playercount(); i < MaxPlayers; i++)
         {
             delete mAIPlayers[i];
             mAIPlayers[i] = nullptr;
@@ -129,7 +129,7 @@ namespace Fishing
             return;
         }
 
-        for (size_t i = 0; i < MAXPLAYERS; i++)
+        for (size_t i = 0; i < MaxPlayers; i++)
         {
             if (attacker == i)
             {
@@ -196,7 +196,7 @@ namespace Fishing
         {
             mPlayers[i]->update_fixed(deltaTime, mInputState[i]);
         }
-        for (size_t i = core_get_playercount(); i < MAXPLAYERS; i++)
+        for (size_t i = core_get_playercount(); i < MaxPlayers; i++)
         {
             mAIPlayers[i]->update_fixed(deltaTime, mPlayers[0]); // TODO
         }
@@ -211,7 +211,7 @@ namespace Fishing
             mCurrTopScore = std::max(mCurrTopScore, p->get_fish_caught());
         }
 
-        for (int i = 0; i < MAXPLAYERS; i++)
+        for (int i = 0; i < MaxPlayers; i++)
         {
             mWinners[i] = mPlayers[i]->get_fish_caught() >= mCurrTopScore;
         }
@@ -266,7 +266,7 @@ namespace Fishing
             {
                 mPlayers[i]->update(deltaTime, mInputState[i]);
             }
-            for (size_t i = core_get_playercount(); i < MAXPLAYERS; i++)
+            for (size_t i = core_get_playercount(); i < MaxPlayers; i++)
             {
                 mAIPlayers[i]->update(deltaTime);
             }
@@ -293,13 +293,13 @@ namespace Fishing
         rspq_block_run(mDplMap);
 
         // === Draw players (3D Pass) === //
-        for (size_t i = 0; i < MAXPLAYERS; i++)
+        for (size_t i = 0; i < MaxPlayers; i++)
         {
             vertices += mPlayers[i]->draw(mViewport, mCamera.position);
         }
 
         // === Draw billboards (2D Pass) === //
-        for (size_t i = 0; i < MAXPLAYERS; i++)
+        for (size_t i = 0; i < MaxPlayers; i++)
         {
             mPlayers[i]->draw_billboard(mViewport, mCamera.position);
         }
@@ -312,7 +312,7 @@ namespace Fishing
         };
         rdpq_text_printf(&center_text_h, FONT_TEXT, 0, TIMER_Y, "%d", (int)ceilf(mStateTime));
 
-        for (int i = 0; i < MAXPLAYERS; i++)
+        for (int i = 0; i < MaxPlayers; i++)
         {
             const rdpq_textparms_t score_params{
                 .style_id = (int16_t)i};
@@ -329,7 +329,7 @@ namespace Fishing
                 .valign = VALIGN_CENTER,
             };
             std::string message{};
-            for (int i = 0; i < MAXPLAYERS; i++)
+            for (int i = 0; i < MaxPlayers; i++)
             {
                 mWinners[i] = mPlayers[i]->get_fish_caught() >= mCurrTopScore;
                 if (mWinners[i])

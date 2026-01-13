@@ -3,6 +3,7 @@
 
 #include <libdragon.h>
 #include "config.h"
+#include "defs.h"
 
 #define FS_BASE_PATH "rom:/"
 
@@ -13,33 +14,10 @@ namespace Core
     ***************************************************************/
 
     // Use this to standardize player colors
-    static constexpr color_t PLAYERCOLOR_1 = RGBA32(255, 0, 0, 255);
-    static constexpr color_t PLAYERCOLOR_2 = RGBA32(0, 255, 0, 255);
-    static constexpr color_t PLAYERCOLOR_3 = RGBA32(0, 0, 255, 255);
-    static constexpr color_t PLAYERCOLOR_4 = RGBA32(255, 255, 0, 255);
-
-    // Player number definition
-    typedef enum
-    {
-        PLAYER_1 = 0,
-        PLAYER_2 = 1,
-        PLAYER_3 = 2,
-        PLAYER_4 = 3,
-    } PlyNum;
-
-    // AI difficulty definition
-    typedef enum
-    {
-        DIFF_EASY = 0,
-        DIFF_MEDIUM = 1,
-        DIFF_HARD = 2,
-    } AiDiff;
-
-    // Player ports
-    typedef struct
-    {
-        joypad_port_t port;
-    } Player;
+    constexpr color_t PlayerColor1 = RGBA32(255, 0, 0, 255);
+    constexpr color_t PlayerColor2 = RGBA32(0, 255, 0, 255);
+    constexpr color_t PlayerColor3 = RGBA32(0, 0, 255, 255);
+    constexpr color_t PlayerColor4 = RGBA32(255, 255, 0, 255);
 
     /***************************************************************
                          Public Core Functions
@@ -94,12 +72,11 @@ namespace Core
 
     /***************************************************************
                         Internal Core Functions
-                  Do not use anything below this line
     ***************************************************************/
 
-    static constexpr float TICKRATE = 30;
-    static constexpr float DELTATIME = (1.0f / (double)TICKRATE);
-    static constexpr uint8_t MAXPLAYERS = 4;
+    constexpr float TickRate = 30;
+    constexpr float DeltaTime = (1.0f / (double)TickRate);
+    constexpr uint8_t MaxPlayers = 4;
 
     void core_set_playercount(bool *enabledconts);
     void core_set_aidifficulty(AiDiff difficulty);
@@ -109,10 +86,10 @@ namespace Core
     // Player info
     inline static Player global_core_players[JOYPAD_PORT_COUNT]{};
     inline static uint32_t global_core_playercount{1};
-    inline static AiDiff global_core_aidifficulty{AI_DIFFICULTY};
+    inline static AiDiff global_core_aidifficulty{AiDifficulty};
 
     // Game info
-    inline static bool global_core_playeriswinner[MAXPLAYERS]{};
+    inline static bool global_core_playeriswinner[MaxPlayers]{};
     inline static bool global_game_ending{false};
 
     // Core info
