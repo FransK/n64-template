@@ -94,7 +94,7 @@ namespace Fishing
 
     void Player::init(int8_t playerNumber, T3DVec3 position, Vector2 rotation, color_t color)
     {
-        assert(playerNumber >= 0 && playerNumber < Core::MaxPlayers);
+        assert(playerNumber >= 0 && playerNumber < Core::MAX_PLAYERS);
 
         mCollider = Collision::Collider{
             .entityId = GetNextEntityId(),

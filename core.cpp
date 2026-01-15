@@ -35,7 +35,7 @@ void Core::core_set_playercount(bool *enabledconts)
     int plynum = 0;
 
     // Attempt to find the first N left-most available controllers
-    for (int i = 0; i < MaxPlayers; i++)
+    for (int i = 0; i < MAX_PLAYERS; i++)
     {
         if (enabledconts[i])
         {
@@ -58,6 +58,6 @@ void Core::core_set_subtick(double subtick)
 
 void Core::core_reset_winners()
 {
-    for (int i = 0; i < MaxPlayers; i++)
+    for (int i = 0; i < MAX_PLAYERS; i++)
         global_core_playeriswinner[i] = false;
 }

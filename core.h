@@ -14,10 +14,10 @@ namespace Core
     ***************************************************************/
 
     // Use this to standardize player colors
-    constexpr color_t PlayerColor1 = RGBA32(255, 0, 0, 255);
-    constexpr color_t PlayerColor2 = RGBA32(0, 255, 0, 255);
-    constexpr color_t PlayerColor3 = RGBA32(0, 0, 255, 255);
-    constexpr color_t PlayerColor4 = RGBA32(255, 255, 0, 255);
+    constexpr color_t PLAYER_COLOR_1 = RGBA32(255, 0, 0, 255);
+    constexpr color_t PLAYER_COLOR_2 = RGBA32(0, 255, 0, 255);
+    constexpr color_t PLAYER_COLOR_3 = RGBA32(0, 0, 255, 255);
+    constexpr color_t PLAYER_COLOR_4 = RGBA32(255, 255, 0, 255);
 
     /***************************************************************
                          Public Core Functions
@@ -74,9 +74,9 @@ namespace Core
                         Internal Core Functions
     ***************************************************************/
 
-    constexpr float TickRate = 30;
-    constexpr float DeltaTime = (1.0f / (double)TickRate);
-    constexpr uint8_t MaxPlayers = 4;
+    constexpr float TICK_RATE = 30;
+    constexpr float DELTA_TIME = (1.0f / (double)TICK_RATE);
+    constexpr uint8_t MAX_PLAYERS = 4;
 
     void core_set_playercount(bool *enabledconts);
     void core_set_aidifficulty(AiDiff difficulty);
@@ -89,7 +89,7 @@ namespace Core
     inline static AiDiff global_core_aidifficulty{AiDifficulty};
 
     // Game info
-    inline static bool global_core_playeriswinner[MaxPlayers]{};
+    inline static bool global_core_playeriswinner[MAX_PLAYERS]{};
     inline static bool global_game_ending{false};
 
     // Core info

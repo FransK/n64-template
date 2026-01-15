@@ -11,7 +11,7 @@ namespace Fishing
     constexpr uint32_t TIMER_Y = 210;
     constexpr uint32_t SCORE_X = 50;
     constexpr uint32_t SCORE_Y = 220;
-    constexpr uint32_t SCORE_X_SPACING = (SCREEN_WIDTH - 2 * SCORE_X) / (Core::MaxPlayers - 1);
+    constexpr uint32_t SCORE_X_SPACING = (SCREEN_WIDTH - 2 * SCORE_X) / (Core::MAX_PLAYERS - 1);
 
     constexpr int FONT_BILLBOARD = 1;
     constexpr int FONT_TEXT = 2;

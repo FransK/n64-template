@@ -52,14 +52,14 @@ int main()
     register_VI_handler((void (*)(void))rand);
 
     // Load game
-    bool joinedPlayers[Core::MaxPlayers] = {true, false, false, false};
+    bool joinedPlayers[Core::MAX_PLAYERS] = {true, false, false, false};
     Core::core_set_playercount(joinedPlayers);
     Core::core_set_aidifficulty(Core::AiDiff::DIFF_EASY);
 
     while (1)
     {
         float accumulator = 0;
-        const float dt = Core::DeltaTime;
+        const float dt = Core::DELTA_TIME;
 
         Fishing::init();
 
