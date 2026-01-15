@@ -7,25 +7,25 @@
 namespace Core
 {
     // Enable Debug features
-    constexpr bool Debug = true;
+    constexpr bool DEBUG = true;
 
     // Initialize USB and isViewer logging
-    constexpr bool DebugLog = Debug;
+    constexpr bool DEBUG_LOG = DEBUG;
 
-    // Initialize RDP debugger. Also requires DebugLog.
-    constexpr bool DebugRDP = false && DebugLog;
+    // Initialize RDP debugger. Also requires DEBUG_LOG.
+    constexpr bool DEBUG_RDP = false && DEBUG_LOG;
 
-    // Skip asking the number of players and assume PlayerCount
-    constexpr bool SkipPlayerSelection = true;
+    // Skip asking the number of players and assume PLAYER_COUNT
+    constexpr bool SKIP_PLAYER_SELECTION = true;
 
     // The number of human players
-    constexpr int PlayerCount = 1;
+    constexpr int PLAYER_COUNT = 1;
 
-    // Skip asking the AI difficulty and assume AiDifficulty
-    constexpr bool SkipDifficultySelection = true;
+    // Skip asking the AI difficulty and assume AI_DIFFICULTY
+    constexpr bool SKIP_DIFFICULTY_SELECTION = true;
 
     // The difficulty of the AI.
-    constexpr AiDiff AiDifficulty = DIFF_EASY;
+    constexpr AiDiff AI_DIFFICULTY = DIFF_EASY;
 }
 
 #endif

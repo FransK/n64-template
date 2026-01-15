@@ -86,7 +86,7 @@ namespace Core
     // Player info
     inline static Player global_core_players[JOYPAD_PORT_COUNT]{};
     inline static uint32_t global_core_playercount{1};
-    inline static AiDiff global_core_aidifficulty{AiDifficulty};
+    inline static AiDiff global_core_aidifficulty{AI_DIFFICULTY};
 
     // Game info
     inline static bool global_core_playeriswinner[MAX_PLAYERS]{};

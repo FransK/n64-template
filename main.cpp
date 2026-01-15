@@ -18,7 +18,7 @@ and provides a basic game loop.
 
 int main()
 {
-    if constexpr (Core::DebugLog)
+    if constexpr (Core::DEBUG_LOG)
     {
         debug_init_isviewer();
         debug_init_usblog();
@@ -37,7 +37,7 @@ int main()
     mixer_init(32);
 
     // Enable RDP debugging
-    if constexpr (Core::DebugRDP)
+    if constexpr (Core::DEBUG_RDP)
     {
         rdpq_debug_start();
         rdpq_debug_log(true);
