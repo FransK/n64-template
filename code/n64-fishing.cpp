@@ -1,20 +1,22 @@
 #include "n64-fishing.h"
 
-namespace Fishing
-{
-    Scene *scene = nullptr;
-}
+using namespace Fishing;
 
-/*==============================
-    init
-    The game initialization function
-  ==============================*/
-void Fishing::init()
+World::World()
 {
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
     t3d_init((T3DInitParams){});
 
-    scene = new Fishing::Scene();
+    scene = new Scene();
+}
+
+World::~World()
+{
+    delete scene;
+
+    // Display cleanup
+    t3d_destroy();
+    display_close();
 }
 
 /*==============================
@@ -24,7 +26,7 @@ void Fishing::init()
     important, like physics.
     @param  The fixed delta time for this tick
 ==============================*/
-void Fishing::fixedloop(float deltatime)
+void World::fixedloop(float deltatime)
 {
     scene->update_fixed(deltatime);
 }
@@ -34,20 +36,7 @@ void Fishing::fixedloop(float deltatime)
     Code that is called every loop.
     @param  The delta time for this tick
 ==============================*/
-void Fishing::loop(float deltatime)
+void World::loop(float deltatime)
 {
     scene->update(deltatime);
-}
-
-/*==============================
-    minigame_cleanup
-    Clean up any memory used by your game just before it ends.
-==============================*/
-void Fishing::cleanup()
-{
-    delete scene;
-
-    // Display cleanup
-    t3d_destroy();
-    display_close();
 }

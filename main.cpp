@@ -61,7 +61,7 @@ int main()
         float accumulator = 0;
         const float dt = Core::DELTA_TIME;
 
-        Fishing::init();
+        Fishing::World *world = new Fishing::World();
 
         // Program loop
         while (!global_game_ending)
@@ -76,7 +76,7 @@ int main()
             accumulator += frametime;
             while (accumulator >= dt)
             {
-                Fishing::fixedloop(dt);
+                world->fixedloop(dt);
                 accumulator -= dt;
             }
 
@@ -85,9 +85,9 @@ int main()
             mixer_try_play();
 
             // Unfixed loop
-            Fishing::loop(frametime);
+            world->loop(frametime);
         }
 
-        Fishing::cleanup();
+        delete world;
     }
 }

@@ -4,10 +4,18 @@
 
 namespace Fishing
 {
-    extern Scene *scene;
+    class World
+    {
+    public:
+        World();
+        ~World();
+        World(const World &other) = delete;
+        World &operator=(const World &other) = delete;
 
-    void init();
-    void fixedloop(float deltatime);
-    void loop(float deltatime);
-    void cleanup();
+        void fixedloop(float deltatime);
+        void loop(float deltatime);
+
+    private:
+        Scene *scene;
+    };
 }
