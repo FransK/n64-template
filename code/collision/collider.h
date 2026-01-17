@@ -24,9 +24,9 @@ namespace Collision
     struct Collider
     {
         int entityId{};
-        Vector3 position{};
-        Vector2 rotation{};
-        Vector3 velocity{};
+        Vector3 *position{};
+        Vector2 *rotation{};
+        Vector3 *velocity{};
         Vector3 center{};
         ColliderType type{};
         Box3D boundingBox{};

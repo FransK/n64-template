@@ -21,7 +21,7 @@ namespace Fishing
         Debug::init();
 
         mMapMatFP = (T3DMat4FP *)malloc_uncached(sizeof(T3DMat4FP));
-        t3d_mat4fp_from_srt_euler(mMapMatFP, (float[3]){0.13f, 1.0f, 0.13f}, (float[3]){0, 0, 0}, (float[3]){0, 0, 0});
+        t3d_mat4fp_from_srt_euler(mMapMatFP, (float[3]){PLAYER_SCALE, 1.0f, PLAYER_SCALE}, (float[3]){0, 0, 0}, (float[3]){0, 0, 0});
 
         rspq_block_begin();
         t3d_matrix_push(mMapMatFP);
@@ -49,33 +49,27 @@ namespace Fishing
         mLightDirVec = (T3DVec3){{1.0f, 1.0f, 1.0f}};
         t3d_vec3_norm(&mLightDirVec);
 
-        // === Initialize the players === //
-        T3DVec3 startPositions[] = {
-            (T3DVec3){{-25, 0.0f, 0}},
-            (T3DVec3){{0, 0.0f, -25}},
-            (T3DVec3){{25, 0.0f, 0}},
-            (T3DVec3){{0, 0.0f, 25}},
-        };
+        // === Initialize the players and components === //
+        PlayerData initialPositions[MAX_PLAYERS] = {
+            {{25, 0.0f, 0}, {0, 1}},
+            {{0, 0.0f, -25}, {1, 0}},
+            {{-25, 0.0f, 0}, {0, -1}},
+            {{0, 0.0f, 25}, {-1, 0}}};
 
-        Vector2 startRotations[] = {
-            {0, 1},
-            {1, 0},
-            {0, -1},
-            {-1, 0}};
+        for (size_t i = 0; i < MAX_PLAYERS; i++)
+        {
+            mPlayerData[i] = initialPositions[i];
+            mPlayerStates[i].init(&mFishCaught[i], &mAnimationComponents[i]);
+            mInputComponents[i] = InputComponent();
+            mAnimationComponents[i].init(mPlayerModel, COLORS[i]);
+            mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
+            mAIPlayers[i].init(&mPlayerData[i]);
 
-        for (uint16_t i = 0; i < core_get_playercount(); i++)
-        {
-            mPlayers[i] = new Player(&mCollisionScene, mPlayerModel);
-            mPlayers[i]->init(i, startPositions[i], startRotations[i], COLORS[i]);
-        }
-        for (uint16_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
-        {
             AIBehavior behavior = (i == MAX_PLAYERS - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
-            mAIPlayers[i] = new PlayerAi(&mCollisionScene, mPlayerModel, behavior);
-            mAIPlayers[i]->init(i, startPositions[i], startRotations[i], COLORS[i]);
-            mPlayers[i] = mAIPlayers[i]->get_player();
+            mAIPlayers[i].set_behavior(behavior);
         }
 
+        // === Initialize Game State === //
         mState = State::INTRO;
         mStateTime = INTRO_TIME;
 
@@ -96,74 +90,12 @@ namespace Fishing
         rdpq_text_unregister_font(FONT_BILLBOARD);
         rdpq_font_free(mFontBillboard);
 
-        for (size_t i = 0; i < core_get_playercount(); i++)
-        {
-            delete mPlayers[i];
-            mPlayers[i] = nullptr;
-        }
-        for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
-        {
-            delete mAIPlayers[i];
-            mAIPlayers[i] = nullptr;
-        }
-
         timer_close();
-    }
-
-    void Scene::read_inputs(PlyNum plyNum)
-    {
-        joypad_port_t port = core_get_playercontroller(plyNum);
-        auto btn = joypad_get_buttons_pressed(port);
-        auto inputs = joypad_get_inputs(port);
-
-        mInputState[plyNum] = {
-            .move = {(float)inputs.stick_x, (float)inputs.stick_y},
-            .fish = btn.a != 0,
-            .attack = btn.b != 0};
-    }
-
-    void Scene::process_attacks(PlyNum attacker)
-    {
-        if (!mPlayers[attacker]->can_move())
-        {
-            return;
-        }
-
-        for (size_t i = 0; i < MAX_PLAYERS; i++)
-        {
-            if (attacker == i)
-            {
-                mPlayers[i]->shove();
-                continue;
-            }
-
-            Vector2 attack_pos{};
-            mPlayers[attacker]->get_attack_position(attack_pos);
-
-            float pos_diff[] = {
-                mPlayers[i]->get_position().x - attack_pos.x,
-                mPlayers[i]->get_position().z - attack_pos.y,
-            };
-
-            float square_distance = pos_diff[0] * pos_diff[0] + pos_diff[1] * pos_diff[1];
-
-            if (square_distance < powf((ATTACK_RADIUS + HITBOX_RADIUS), 2))
-            {
-                if (i < core_get_playercount())
-                {
-                    mPlayers[i]->receive_shove();
-                }
-                else
-                {
-                    mAIPlayers[i]->receive_shove();
-                }
-            }
-        }
     }
 
     void Scene::update_fixed(float deltaTime)
     {
-        // === Update State === //
+        // === Update Game State === //
         mStateTime -= deltaTime;
         switch (mState)
         {
@@ -173,7 +105,7 @@ namespace Fishing
                 mState = State::GAME;
                 mStateTime = GAME_TIME;
             }
-            break;
+            return;
         case State::GAME:
             if (mStateTime <= 0)
             {
@@ -191,29 +123,59 @@ namespace Fishing
             return;
         }
 
-        // === Update Fixed Players === //
+        // === Update Inputs and AI === //
+        ticksActorUpdate = get_ticks();
         for (size_t i = 0; i < core_get_playercount(); i++)
         {
-            mPlayers[i]->update_fixed(deltaTime, mInputState[i]);
+            mInputComponents[i].updateInputPlayer(deltaTime,
+                                                  core_get_playercontroller((PlyNum)i),
+                                                  mPlayerStates[i],
+                                                  mPlayerData[i].velocity,
+                                                  mPlayerData[i].rotation);
         }
         for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
         {
-            mAIPlayers[i]->update_fixed(deltaTime, mPlayers[0]); // TODO
+            // Update AI to get inputs
+            InputState aiInput{};
+            mAIPlayers[i].update(deltaTime,
+                                 mPlayerStates[i],
+                                 i,
+                                 &mPlayerData[0],
+                                 &mWinners[0],
+                                 aiInput);
+
+            // Feed AI inputs to input component
+            mInputComponents[i].updateInputAI(deltaTime,
+                                              aiInput,
+                                              mPlayerStates[i],
+                                              mPlayerData[i].velocity,
+                                              mPlayerData[i].rotation);
         }
+        ticksCollisionUpdate = get_ticks();
+        ticksActorUpdate = ticksCollisionUpdate - ticksActorUpdate;
 
         // === Update Collision Scene === //
         mCollisionScene.update(deltaTime);
+        ticksAnimationUpdate = get_ticks();
+        ticksCollisionUpdate = ticksAnimationUpdate - ticksCollisionUpdate;
+
+        // === Update Animations === //
+        for (auto &animComp : mAnimationComponents)
+        {
+            animComp.update(deltaTime);
+        }
+        ticksAnimationUpdate = get_ticks() - ticksAnimationUpdate;
 
         // === Keep Track of Leaders === //
         mCurrTopScore = 0;
-        for (auto &p : mPlayers)
+        for (auto &p : mFishCaught)
         {
-            mCurrTopScore = std::max(mCurrTopScore, p->get_fish_caught());
+            mCurrTopScore = std::max(mCurrTopScore, p);
         }
 
         for (int i = 0; i < MAX_PLAYERS; i++)
         {
-            mWinners[i] = mPlayers[i]->get_fish_caught() >= mCurrTopScore;
+            mWinners[i] = mFishCaught[i] >= mCurrTopScore;
         }
     }
 
@@ -245,34 +207,6 @@ namespace Fishing
         // === Draw Viewport === //
         t3d_viewport_attach(&mViewport);
 
-        // === Process Inputs === //
-        ticksActorUpdate = get_ticks();
-        if (mState == State::GAME)
-        {
-            for (size_t i = 0; i < core_get_playercount(); i++)
-            {
-                read_inputs((PlyNum)i);
-                if (mInputState[i].attack)
-                {
-                    process_attacks((PlyNum)i);
-                }
-            }
-        }
-
-        // === Update Players === //
-        if (mState == State::GAME)
-        {
-            for (size_t i = 0; i < core_get_playercount(); i++)
-            {
-                mPlayers[i]->update(deltaTime, mInputState[i]);
-            }
-            for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
-            {
-                mAIPlayers[i]->update(deltaTime);
-            }
-        }
-        ticksActorUpdate = get_ticks() - ticksActorUpdate;
-
         // === Draw Background === //
         rdpq_set_mode_fill({(uint8_t)(0x80),
                             (uint8_t)(0xb8),
@@ -295,13 +229,13 @@ namespace Fishing
         // === Draw players (3D Pass) === //
         for (size_t i = 0; i < MAX_PLAYERS; i++)
         {
-            vertices += mPlayers[i]->draw(mViewport, mCamera.position);
+            vertices += mAnimationComponents[i].draw(mPlayerData[i].position, mPlayerData[i].rotation);
         }
 
         // === Draw billboards (2D Pass) === //
         for (size_t i = 0; i < MAX_PLAYERS; i++)
         {
-            mPlayers[i]->draw_billboard(mViewport, mCamera.position);
+            mPlayers[i].draw_billboard(mViewport);
         }
 
         // === Draw UI === //
@@ -316,7 +250,7 @@ namespace Fishing
         {
             const rdpq_textparms_t score_params{
                 .style_id = (int16_t)i};
-            rdpq_text_printf(&score_params, FONT_TEXT, SCORE_X + i * SCORE_X_SPACING, SCORE_Y, "%d", mPlayers[i]->get_fish_caught());
+            rdpq_text_printf(&score_params, FONT_TEXT, SCORE_X + i * SCORE_X_SPACING, SCORE_Y, "%d", mFishCaught[i]);
         }
 
         if (mState == State::GAME_OVER)
@@ -331,7 +265,7 @@ namespace Fishing
             std::string message{};
             for (int i = 0; i < MAX_PLAYERS; i++)
             {
-                mWinners[i] = mPlayers[i]->get_fish_caught() >= mCurrTopScore;
+                mWinners[i] = mFishCaught[i] >= mCurrTopScore;
                 if (mWinners[i])
                 {
                     core_set_winner((PlyNum)i);

@@ -1,23 +1,28 @@
 #pragma once
 
 #include <t3d/t3d.h>
+#include <vector>
 
 #include "../../core.h"
 
+#include "../animation/animationComponent.h"
 #include "../collision/scene.h"
 #include "../debug/overlay.h"
-#include "../input/inputstate.h"
+#include "../input/inputComponent.h"
+#include "../player/playerData.h"
+#include "../player/playerState.h"
 
 #include "camera.h"
 #include "player.h"
 #include "playerAi.h"
 
 using CollisionScene = ::Collision::Scene;
+using std::vector;
 using namespace Core;
 
 namespace Fishing
 {
-    constexpr float INTRO_TIME = 5.f;
+    constexpr float INTRO_TIME = 1.f;
     constexpr float GAME_TIME = 30.f;
     constexpr float GAME_OVER_TIME = 5.f;
 
@@ -43,7 +48,20 @@ namespace Fishing
 
         float mStateTime{};
 
-        CollisionScene mCollisionScene{};
+        /* Player Data Block - Positions, Velocities, etc*/
+        PlayerData mPlayerData[MAX_PLAYERS];
+        PlayerState mPlayerStates[MAX_PLAYERS];
+        PlayerAi mAIPlayers[MAX_PLAYERS];
+        InputComponent mInputComponents[MAX_PLAYERS];
+        CollisionScene mCollisionScene;
+        AnimationComponent mAnimationComponents[MAX_PLAYERS];
+        int mFishCaught[MAX_PLAYERS]{0};
+
+        /* Container class? */
+        Player mPlayers[MAX_PLAYERS];
+
+        uint8_t mWinners[MAX_PLAYERS]{0};
+        int mCurrTopScore{0};
 
         T3DModel *mPlayerModel{};
 
@@ -52,12 +70,6 @@ namespace Fishing
         T3DModel *mMapModel{};
         T3DMat4FP *mMapMatFP{};
         rspq_block_t *mDplMap{};
-
-        Player *mPlayers[MAX_PLAYERS]{};
-        PlayerAi *mAIPlayers[MAX_PLAYERS]{};
-        InputState mInputState[MAX_PLAYERS]{};
-        uint8_t mWinners[MAX_PLAYERS]{0};
-        uint8_t mCurrTopScore{0};
 
         rdpq_font_t *mFontBillboard{};
         rdpq_font_t *mFontText{};
@@ -68,11 +80,10 @@ namespace Fishing
 
         Debug::Overlay debugOvl{};
 
-        void read_inputs(PlyNum plyNum);
-        void process_attacks(PlyNum attacker);
-
     public:
         long ticksActorUpdate{0};
+        long ticksCollisionUpdate{0};
+        long ticksAnimationUpdate{0};
 
         const CollisionScene &getCollScene();
         void update_fixed(float deltaTime);

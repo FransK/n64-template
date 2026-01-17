@@ -74,7 +74,7 @@ namespace Core
                         Internal Core Functions
     ***************************************************************/
 
-    constexpr float TICK_RATE = 30;
+    constexpr float TICK_RATE = 60;
     constexpr float DELTA_TIME = (1.0f / (double)TICK_RATE);
     constexpr uint8_t MAX_PLAYERS = 4;
 

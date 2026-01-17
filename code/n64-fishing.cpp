@@ -14,7 +14,6 @@ World::~World()
 {
     delete scene;
 
-    // Display cleanup
     t3d_destroy();
     display_close();
 }

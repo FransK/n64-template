@@ -10,7 +10,7 @@ namespace Math
     {
         float x, y, z, w;
 
-        static void axisComplex(const Vector3 &axis, Vector2 *complex, Quaternion *out)
+        static void axisComplex(const Vector3 &axis, const Vector2 *complex, Quaternion *out)
         {
             float sinTheta = 0.5f - complex->x * 0.5f;
 

@@ -44,14 +44,14 @@ void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTi
                               {
                                   showCollSpheres = item.value;
                               }});
-        menu.items.push_back({"Coll-Tri", 0, true, [](MenuItem &item)
-                              {
-                                  showCollMesh = item.value;
-                              }});
-        menu.items.push_back({"Actor", 0, true, [](MenuItem &item)
-                              {
-                                  actorDebug = item.value;
-                              }});
+        // menu.items.push_back({"Coll-Tri", 0, true, [](MenuItem &item)
+        //                       {
+        //                           showCollMesh = item.value;
+        //                       }});
+        // menu.items.push_back({"Actor", 0, true, [](MenuItem &item)
+        //                       {
+        //                           actorDebug = item.value;
+        //                       }});
         // menu.items.push_back({"Focus Player", scene.followPlayer, true, [&scene](MenuItem &item)
         //                       {
         //                           scene.followPlayer = item.value;
@@ -122,13 +122,13 @@ void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTi
 
     // rdpq_set_prim_color(COLOR_BVH);
     // posX = Debug::printf(posX, posY, "%.2f", (double)TICKS_TO_US(collScene.ticksBVH) / 1000.0) + 8;
-    // rdpq_set_prim_color(COLOR_COLL);
-    // posX = Debug::printf(posX, posY, "%.2f", (double)TICKS_TO_US(collScene.ticks - collScene.ticksBVH) / 1000.0) + 2;
-    // posX = Debug::printf(posX, posY, ":%d", collScene.raycastCount) + 8;
     rdpq_set_prim_color(COLOR_ACTOR_UPDATE);
     posX = Debug::printf(posX, posY, "%.2f", (double)TICKS_TO_US(scene.ticksActorUpdate) / 1000.0) + 8;
-    // rdpq_set_prim_color(COLOR_CULL);
-    // Debug::printf(posX, posY + 9, "%.2f", (double)TICKS_TO_US(scene.ticksCull) / 1000.0);
+    rdpq_set_prim_color(COLOR_COLL);
+    posX = Debug::printf(posX, posY, "%.2f", (double)TICKS_TO_US(scene.ticksCollisionUpdate) / 1000.0) + 8;
+    // posX = Debug::printf(posX, posY, ":%d", collScene.raycastCount) + 8;
+    rdpq_set_prim_color(COLOR_CULL);
+    Debug::printf(posX, posY, "%.2f", (double)TICKS_TO_US(scene.ticksAnimationUpdate) / 1000.0);
     // posX = Debug::printf(posX, posY, "%.2f", (double)TICKS_TO_US(scene.getAudio().ticks) / 1000.0) + 8;
 
     rdpq_set_prim_color({0xFF, 0xFF, 0xFF, 0xFF});
@@ -180,9 +180,9 @@ void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTi
 
     // Performance graph
     // float timeCollBVH = usToWidth(TICKS_TO_US(collScene.ticksBVH));
-    // float timeColl = usToWidth(TICKS_TO_US(collScene.ticks - collScene.ticksBVH));
     float timeActorUpdate = usToWidth(TICKS_TO_US(scene.ticksActorUpdate));
-    // float timeCull = usToWidth(TICKS_TO_US(scene.getAudio().ticks));
+    float timeColl = usToWidth(TICKS_TO_US(scene.ticksCollisionUpdate));
+    float timeCull = usToWidth(TICKS_TO_US(scene.ticksAnimationUpdate));
     float timeSelf = usToWidth(TICKS_TO_US(ticksSelf));
 
     rdpq_set_mode_fill({0, 0, 0, 0xFF});
@@ -193,15 +193,15 @@ void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTi
     // rdpq_set_fill_color(COLOR_BVH);
     // rdpq_fill_rectangle(posX, posY, posX + timeCollBVH, posY + barHeight);
     // posX += timeCollBVH;
-    // rdpq_set_fill_color(COLOR_COLL);
-    // rdpq_fill_rectangle(posX, posY, posX + timeColl, posY + barHeight);
-    // posX += timeColl;
     rdpq_set_fill_color(COLOR_ACTOR_UPDATE);
     rdpq_fill_rectangle(posX, posY, posX + timeActorUpdate, posY + barHeight);
     posX += timeActorUpdate;
-    // rdpq_set_fill_color(COLOR_CULL);
-    // rdpq_fill_rectangle(posX, posY, posX + timeCull, posY + barHeight);
-    // posX += timeCull;
+    rdpq_set_fill_color(COLOR_COLL);
+    rdpq_fill_rectangle(posX, posY, posX + timeColl, posY + barHeight);
+    posX += timeColl;
+    rdpq_set_fill_color(COLOR_CULL);
+    rdpq_fill_rectangle(posX, posY, posX + timeCull, posY + barHeight);
+    posX += timeCull;
     rdpq_set_fill_color({0xFF, 0xFF, 0xFF, 0xFF});
     rdpq_fill_rectangle(24 + barWidth - timeSelf, posY, 24 + barWidth, posY + barHeight);
 
