@@ -4,10 +4,14 @@
 
 #include "../config.h"
 #include "../math/quaternion.h"
+#include "../math/vector2.h"
+#include "../math/vector3.h"
 #include "../player/playerConsts.h"
 
 #include "entity.h"
 #include "fish.h"
+
+using namespace Math;
 
 namespace Fishing
 {
@@ -35,11 +39,30 @@ namespace Fishing
         mCollider.recalcBB();
 
         mScene->add(&mCollider);
+
+        mDamageTrigger = Collision::Collider{
+            .entityId = mEntityId,
+            .position = &data->attackPosition,
+            .rotation = &data->attackRotation,
+            .velocity = &data->attackVelocity,
+            .type = DamageTriggerType,
+            .scale = 1.0f,
+            .hasGravity = false,
+            .isTrigger = true,
+            .collisionLayers = CollisionLayerTangible,
+            .collisionGroup = uint16_t(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
+        };
+
+        mDamageTrigger.center.y = DamageTriggerType.data.sphere.radius;
+        mDamageTrigger.recalcBB();
+
+        mScene->add(&mDamageTrigger, false);
     }
 
     Player::~Player()
     {
         mScene->remove(&mCollider);
+        mScene->remove(&mDamageTrigger);
     }
 
     void Player::draw_billboard(T3DViewport &viewport) const
@@ -68,11 +91,5 @@ namespace Fishing
         const rdpq_textparms_t param{};
         std::string mBillboardText = mPlayerState->canCatch() ? "HOOKED!" : "Fishing...";
         rdpq_text_printf(&param, FONT_BILLBOARD, x, y, "%s", mBillboardText.c_str());
-    }
-
-    void Player::get_attack_position(Vector2 &attack_pos) const
-    {
-        attack_pos.x = mPlayerData->position.x + mPlayerData->rotation.x * ATTACK_OFFSET;
-        attack_pos.y = mPlayerData->position.z + mPlayerData->rotation.y * ATTACK_OFFSET;
     }
 }

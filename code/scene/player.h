@@ -8,22 +8,14 @@
 #include "../collision/scene.h"
 #include "../collision/collider.h"
 #include "../collision/cylinder.h"
+#include "../collision/sphere.h"
 #include "../input/inputState.h"
 #include "../math/vector2.h"
 #include "../player/playerData.h"
 #include "../player/playerState.h"
+#include "playerColliders.h"
 
 using namespace Math;
-
-constexpr Collision::ColliderType PlayerColliderType = {
-    .minkowskiSum = Collision::Cylinder::MinkowskiSum,
-    .boundingBoxCalculator = Collision::Cylinder::BoundingBox,
-    .data = {
-        .cylinder = {
-            .radius = 5.0f,
-            .halfHeight = 12.0f}},
-    .bounce = 0.0f,
-    .friction = 0.0f};
 
 namespace Fishing
 {
@@ -31,6 +23,7 @@ namespace Fishing
     {
     private:
         Collision::Collider mCollider{};
+        Collision::Collider mDamageTrigger{};
         int mEntityId{-1};
 
         Collision::Scene *mScene{};
@@ -41,7 +34,8 @@ namespace Fishing
         void init(Collision::Scene *scene, PlayerData *data, PlayerState *state, int8_t playerNumber);
         void draw_billboard(T3DViewport &viewport) const;
 
-        void get_attack_position(Vector2 &attack_pos) const;
+        Collision::Collider *get_collider() { return &mCollider; }
+        Collision::Collider *get_damage_trigger() { return &mDamageTrigger; }
 
         Player() = default;
         ~Player();

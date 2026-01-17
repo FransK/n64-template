@@ -4,6 +4,7 @@
 #include <libdragon.h>
 
 #include "inputState.h"
+#include "../collision/scene.h"
 #include "../player/playerData.h"
 #include "../player/playerState.h"
 
@@ -15,21 +16,24 @@ public:
     void updateInputPlayer(float deltaTime,
                            joypad_port_t port,
                            PlayerState &playerState,
-                           Vector3 &playerVelocity,
-                           Vector2 &playerRotation);
+                           PlayerData &playerData,
+                           Collision::Scene &collScene,
+                           Collision::Collider *damageTrigger);
     void updateInputAI(float deltaTime,
                        InputState &inputState,
                        PlayerState &playerState,
-                       Vector3 &playerVelocity,
-                       Vector2 &playerRotation);
+                       PlayerData &playerData,
+                       Collision::Scene &collScene,
+                       Collision::Collider *damageTrigger);
 
 private:
     InputState mInputState{};
 
     void updateCommon(float deltaTime,
                       PlayerState &playerState,
-                      Vector3 &playerVelocity,
-                      Vector2 &playerRotation);
+                      PlayerData &playerData,
+                      Collision::Scene &collScene,
+                      Collision::Collider *damageTrigger);
 };
 
 #endif

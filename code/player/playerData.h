@@ -11,6 +11,9 @@ struct PlayerData
     Vector3 position{};
     Vector2 rotation{};
     Vector3 velocity{};
+    Vector3 attackPosition{};
+    Vector2 attackRotation{Vec2Zero};
+    Vector3 attackVelocity{Vec3Zero};
 };
 
 #endif

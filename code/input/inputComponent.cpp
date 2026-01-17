@@ -3,8 +3,9 @@
 void InputComponent::updateInputPlayer(float deltaTime,
                                        joypad_port_t port,
                                        PlayerState &playerState,
-                                       Vector3 &playerVelocity,
-                                       Vector2 &playerRotation)
+                                       PlayerData &playerData,
+                                       Collision::Scene &collScene,
+                                       Collision::Collider *damageTrigger)
 {
     auto btn = joypad_get_buttons_pressed(port);
     auto inputs = joypad_get_inputs(port);
@@ -14,26 +15,28 @@ void InputComponent::updateInputPlayer(float deltaTime,
         .fish = btn.a != 0,
         .attack = btn.b != 0};
 
-    updateCommon(deltaTime, playerState, playerVelocity, playerRotation);
+    updateCommon(deltaTime, playerState, playerData, collScene, damageTrigger);
 }
 
 void InputComponent::updateInputAI(float deltaTime,
                                    InputState &inputState,
                                    PlayerState &playerState,
-                                   Vector3 &playerVelocity,
-                                   Vector2 &playerRotation)
+                                   PlayerData &playerData,
+                                   Collision::Scene &collScene,
+                                   Collision::Collider *damageTrigger)
 {
     mInputState = inputState;
 
-    updateCommon(deltaTime, playerState, playerVelocity, playerRotation);
+    updateCommon(deltaTime, playerState, playerData, collScene, damageTrigger);
 }
 
 void InputComponent::updateCommon(float deltaTime,
                                   PlayerState &playerState,
-                                  Vector3 &playerVelocity,
-                                  Vector2 &playerRotation)
+                                  PlayerData &playerData,
+                                  Collision::Scene &collScene,
+                                  Collision::Collider *damageTrigger)
 {
-    playerState.update(deltaTime, playerVelocity);
+    playerState.update(deltaTime, playerData, collScene, damageTrigger);
 
     switch (playerState.getState())
     {
@@ -52,7 +55,7 @@ void InputComponent::updateCommon(float deltaTime,
                 // Successful catch
                 playerState.setActionSuccess(true);
             }
-            playerState.changeState(STATE_IDLE, playerVelocity);
+            playerState.changeState(STATE_IDLE, playerData, collScene, damageTrigger);
         }
         break;
     case STATE_WALKING:
@@ -61,14 +64,14 @@ void InputComponent::updateCommon(float deltaTime,
         if (mInputState.attack)
         {
             // Start attack
-            playerState.changeState(STATE_ATTACKING, playerVelocity);
+            playerState.changeState(STATE_ATTACKING, playerData, collScene, damageTrigger);
             break;
         }
 
         if (mInputState.fish)
         {
             // Start fishing
-            playerState.changeState(STATE_CASTING, playerVelocity);
+            playerState.changeState(STATE_CASTING, playerData, collScene, damageTrigger);
             break;
         }
 
@@ -78,13 +81,13 @@ void InputComponent::updateCommon(float deltaTime,
             Vector2 normMove{};
             Vector2::norm(&mInputState.move, &normMove);
             // Start walking
-            playerState.changeState(STATE_WALKING, playerVelocity);
-            playerRotation = {-normMove.y, normMove.x};
-            playerVelocity = {normMove.x * BASE_SPEED, 0.0f, -normMove.y * BASE_SPEED};
+            playerState.changeState(STATE_WALKING, playerData, collScene, damageTrigger);
+            playerData.rotation = {normMove.x, normMove.y};
+            playerData.velocity = {normMove.x * BASE_SPEED, 0.0f, -normMove.y * BASE_SPEED};
             break;
         }
 
-        playerState.changeState(STATE_IDLE, playerVelocity);
+        playerState.changeState(STATE_IDLE, playerData, collScene, damageTrigger);
         break;
     default:
         break;

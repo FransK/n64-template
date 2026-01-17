@@ -2,9 +2,12 @@
 
 namespace Math
 {
-    struct Vector3
+    struct __attribute__((packed)) Vector3
     {
         float x, y, z;
+
+        float &operator[](int index) { return (&x)[index]; }
+        const float &operator[](int index) const { return (&x)[index]; }
 
         static void add(const Vector3 *a, const Vector3 *b, Vector3 *out);
         static void addScaled(const Vector3 *a, const Vector3 *normal, float scale, Vector3 *out);

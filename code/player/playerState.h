@@ -5,7 +5,9 @@
 #include "playerData.h"
 
 #include "../animation/animationComponent.h"
+#include "../collision/scene.h"
 #include "../math/vector3.h"
+#include "../scene/playerColliders.h"
 
 enum PlayerStateEnum
 {
@@ -39,9 +41,9 @@ public:
     }
 
     bool canCatch() const { return mState == STATE_FISHING && mStateTimer < CATCH_TIMER; }
-    void changeState(const PlayerStateEnum &newState, Vector3 &velocity);
+    void changeState(const PlayerStateEnum &newState, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger);
     void setActionSuccess(bool success) { mActionSuccess = success; }
-    void update(float deltaTime, Vector3 &velocity);
+    void update(float deltaTime, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger);
 
     PlayerStateEnum getState() const { return mState; }
     float getStateTimer() const { return mStateTimer; }

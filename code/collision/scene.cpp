@@ -13,16 +13,25 @@
 using namespace Collision;
 using namespace Math;
 
-Scene::Scene() {}
-Scene::~Scene() {}
-
-void Scene::add(Collider *object)
+void Scene::add(Collider *object, bool isActive)
 {
     colliders.push_back(object);
+    if (isActive)
+    {
+        activeColliders.push_back(object);
+    }
 }
 
 void Scene::remove(Collider *object)
 {
+    for (auto iter = activeColliders.begin(); iter != activeColliders.end(); ++iter)
+    {
+        if (*iter == object)
+        {
+            activeColliders.erase(iter);
+            break;
+        }
+    }
     for (auto iter = colliders.begin(); iter != colliders.end(); ++iter)
     {
         if (*iter == object)
@@ -32,10 +41,34 @@ void Scene::remove(Collider *object)
     }
 }
 
+void Scene::activate(Collider *object)
+{
+    for (auto *c : activeColliders)
+    {
+        if (c == object)
+        {
+            return;
+        }
+    }
+
+    activeColliders.push_back(object);
+}
+
+void Scene::deactivate(Collider *object)
+{
+    for (auto iter = activeColliders.begin(); iter != activeColliders.end(); ++iter)
+    {
+        if (*iter == object)
+        {
+            return (void)activeColliders.erase(iter);
+        }
+    }
+}
+
 void Scene::update(float fixedTimeStep)
 {
     /* Integrate objects */
-    for (auto *c : colliders)
+    for (auto *c : activeColliders)
     {
         c->update(fixedTimeStep);
         c->recalcBB();
@@ -45,7 +78,7 @@ void Scene::update(float fixedTimeStep)
     runCollision();
 
     /* Clamp to world */
-    for (auto *c : colliders)
+    for (auto *c : activeColliders)
     {
         constrainToWorld(c);
         c->constrainPosition();
@@ -54,7 +87,7 @@ void Scene::update(float fixedTimeStep)
 
 void Scene::debugDraw()
 {
-    for (auto *c : colliders)
+    for (auto *c : activeColliders)
     {
         Debug::drawBox(c->boundingBox);
     }
@@ -63,22 +96,22 @@ void Scene::debugDraw()
 void Scene::runCollision()
 {
     // === Sweep and Prune === //
-    int edgeCount = colliders.size() * 2;
+    int edgeCount = activeColliders.size() * 2;
     std::vector<ColliderEdge> colliderEdges(edgeCount);
     ColliderEdge *currEdge = &colliderEdges[0];
 
     // Prune along x axis by looking at min and max x of each BB
-    for (size_t i = 0; i < colliders.size(); i++)
+    for (size_t i = 0; i < activeColliders.size(); i++)
     {
         currEdge->isStartEdge = 1;
         currEdge->objectIndex = i;
-        currEdge->x = (short)(colliders[i]->boundingBox.min.x);
+        currEdge->x = (short)(activeColliders[i]->boundingBox.min.x);
 
         currEdge += 1;
 
         currEdge->isStartEdge = 0;
         currEdge->objectIndex = i;
-        currEdge->x = (short)(colliders[i]->boundingBox.max.x);
+        currEdge->x = (short)(activeColliders[i]->boundingBox.max.x);
 
         currEdge += 1;
     }
@@ -86,7 +119,7 @@ void Scene::runCollision()
     // Sort by x position of each edge
     std::sort(colliderEdges.begin(), colliderEdges.end());
 
-    std::vector<uint16_t> activeObjects(colliders.size());
+    std::vector<uint16_t> activeObjects(activeColliders.size());
     int activeObjectCount = 0;
 
     for (int edgeIndex = 0; edgeIndex < edgeCount; edgeIndex++)
@@ -95,11 +128,10 @@ void Scene::runCollision()
 
         if (edge.isStartEdge)
         {
-            Collider *a = colliders[edge.objectIndex];
-
+            Collider *a = activeColliders[edge.objectIndex];
             for (int activeIndex = 0; activeIndex < activeObjectCount; activeIndex++)
             {
-                Collider *b = colliders[activeObjects[activeIndex]];
+                Collider *b = activeColliders[activeObjects[activeIndex]];
 
                 // === AABB === //
                 if (Box3D::hasOverlap(a->boundingBox, b->boundingBox))
@@ -147,9 +179,21 @@ void Scene::collide(Collider *a, Collider *b)
         return;
     }
 
+    if (a->isTrigger && b->isTrigger)
+    {
+        return;
+    }
+
     Simplex simplex{};
     if (!GJK::checkForOverlap(&simplex, a, b, &Vec3Right))
     {
+        return;
+    }
+
+    if (a->isTrigger || b->isTrigger)
+    {
+        // TODO: Trigger event
+        debugf("Hit trigger");
         return;
     }
 
@@ -189,6 +233,11 @@ void Scene::correctVelocity(Collider *object, EpaResult *result, float ratio, fl
 
 void Scene::constrainToWorld(Collider *object)
 {
+    if (object->isTrigger)
+    {
+        return;
+    }
+
     if ((*object->position).y < 0.0f)
     {
         EpaResult result;

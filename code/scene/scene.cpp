@@ -51,10 +51,10 @@ namespace Fishing
 
         // === Initialize the players and components === //
         PlayerData initialPositions[MAX_PLAYERS] = {
-            {{25, 0.0f, 0}, {0, 1}},
-            {{0, 0.0f, -25}, {1, 0}},
-            {{-25, 0.0f, 0}, {0, -1}},
-            {{0, 0.0f, 25}, {-1, 0}}};
+            {{-25, 0.0f, 0}, {1, 0}},
+            {{0, 0.0f, -25}, {0, 1}},
+            {{25, 0.0f, 0}, {-1, 0}},
+            {{0, 0.0f, 25}, {0, -1}}};
 
         for (size_t i = 0; i < MAX_PLAYERS; i++)
         {
@@ -130,8 +130,9 @@ namespace Fishing
             mInputComponents[i].updateInputPlayer(deltaTime,
                                                   core_get_playercontroller((PlyNum)i),
                                                   mPlayerStates[i],
-                                                  mPlayerData[i].velocity,
-                                                  mPlayerData[i].rotation);
+                                                  mPlayerData[i],
+                                                  mCollisionScene,
+                                                  mPlayers[i].get_damage_trigger());
         }
         for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
         {
@@ -148,8 +149,9 @@ namespace Fishing
             mInputComponents[i].updateInputAI(deltaTime,
                                               aiInput,
                                               mPlayerStates[i],
-                                              mPlayerData[i].velocity,
-                                              mPlayerData[i].rotation);
+                                              mPlayerData[i],
+                                              mCollisionScene,
+                                              mPlayers[i].get_damage_trigger());
         }
         ticksCollisionUpdate = get_ticks();
         ticksActorUpdate = ticksCollisionUpdate - ticksActorUpdate;

@@ -32,6 +32,7 @@ namespace Collision
         Box3D boundingBox{};
         float scale{};
         bool hasGravity{true};
+        bool isTrigger{false};
         bool isFixed{false};
         uint16_t collisionLayers{};
         uint16_t collisionGroup{};

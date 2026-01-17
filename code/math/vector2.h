@@ -23,9 +23,10 @@ namespace Math
             out->x = in->x * invLen;
             out->y = in->y * invLen;
         }
-
-        static void normAndScale(Vector2 *in, Vector2 *out, float scale)
-        {
-        }
     };
+
+    constexpr Vector2 Vec2Right = {1.0f, 0.0f};
+    constexpr Vector2 Vec2Up = {0.0f, 1.0f};
+    constexpr Vector2 Vec2Zero = {0.0f, 0.0f};
+    constexpr Vector2 Vec2One = {1.0f, 1.0f};
 }
