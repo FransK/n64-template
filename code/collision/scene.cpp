@@ -162,8 +162,8 @@ void Scene::collide(Collider *a, Collider *b)
     float friction = a->type.friction < b->type.friction ? a->type.friction : b->type.friction;
     float bounce = a->type.bounce > b->type.bounce ? a->type.bounce : b->type.bounce;
 
-    correctOverlap(b, &result, -0.7f, friction, bounce);
-    correctOverlap(a, &result, 0.3f, friction, bounce);
+    correctOverlap(b, &result, -0.6f, friction, bounce);
+    correctOverlap(a, &result, 0.6f, friction, bounce);
 }
 
 void Scene::correctOverlap(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
