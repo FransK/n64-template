@@ -4,6 +4,12 @@
 
 void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out)
 {
+    if (mDelayActionTimer > 0.0f)
+    {
+        mDelayActionTimer -= deltaTime;
+        return;
+    }
+
     PlayerStateEnum state = playerState.getState();
 
     switch (state)
@@ -21,6 +27,8 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
         if (playerState.getStateTimer() < CATCH_TIMER - mDelayCatchTimer)
         {
             out.fish = true;
+            mDelayActionTimer = 2.0f;
+            mDelayCatchTimer = 0.6f;
         }
         break;
     case STATE_ATTACKING:
@@ -34,12 +42,6 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
 
 void PlayerAi::update_idle(float deltaTime, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out)
 {
-    if (mDelayActionTimer > 0.0f)
-    {
-        mDelayActionTimer -= deltaTime;
-        return;
-    }
-
     switch (mBehavior)
     {
     case BEHAVE_BALANCED:

@@ -31,7 +31,7 @@ private:
     Vector3 mMovementTarget{};
     const PlayerData *mPlayer{};
     const PlayerData *mTarget{};
-    float mDelayActionTimer{0.0f};
+    float mDelayActionTimer{2.0f};
     float mDelayCatchTimer{0.6f};
 
     void update_idle(float deltaTime, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out);
