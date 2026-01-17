@@ -25,6 +25,7 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
         break;
     case STATE_ATTACKING:
     case STATE_CASTING:
+    case STATE_STUNNED:
     default:
         // Do nothing, wait for action to complete
         break;
@@ -83,7 +84,7 @@ void PlayerAi::move_to_target(InputState &out)
     Vector3 distance;
     Vector3::sub(&mMovementTarget, &mPlayer->position, &distance);
 
-    if (Vector3::magSqrd(&distance) < 0.05f)
+    if (Vector3::magSqrd(&distance) < 0.1f)
     {
         out.move = {0.0f, 0.0f};
         out.fish = mBehavior == BEHAVE_FISHERMAN;

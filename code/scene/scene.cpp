@@ -65,7 +65,8 @@ namespace Fishing
             mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
             mAIPlayers[i].init(&mPlayerData[i]);
 
-            AIBehavior behavior = (i == MAX_PLAYERS - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
+            // AIBehavior behavior = (i == MAX_PLAYERS - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
+            AIBehavior behavior = AIBehavior::BEHAVE_FISHERMAN;
             mAIPlayers[i].set_behavior(behavior);
         }
 

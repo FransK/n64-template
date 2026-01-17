@@ -34,6 +34,7 @@ void PlayerState::changeState(const PlayerStateEnum &newState, Vector3 &velocity
     case STATE_FISHING:
         mStateTimer = Fish::get_new_timer();
         velocity = {0.0f, 0.0f, 0.0f};
+        mAnimationComponent->play_animation(Anim::IDLE);
         break;
     case STATE_STUNNED:
         mStateTimer = RECEIVE_SHOVE_TIME;

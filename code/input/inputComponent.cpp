@@ -33,13 +33,14 @@ void InputComponent::updateCommon(float deltaTime,
                                   Vector3 &playerVelocity,
                                   Vector2 &playerRotation)
 {
+    playerState.update(deltaTime, playerVelocity);
+
     switch (playerState.getState())
     {
     case STATE_STUNNED:
-        // Ignore inputs while stunned
-        break;
+    case STATE_CASTING:
     case STATE_ATTACKING:
-        // Ignore inputs while attacking
+        // Ignore inputs
         break;
     case STATE_FISHING:
         // Allow only fishing inputs
@@ -67,7 +68,7 @@ void InputComponent::updateCommon(float deltaTime,
         if (mInputState.fish)
         {
             // Start fishing
-            playerState.changeState(STATE_FISHING, playerVelocity);
+            playerState.changeState(STATE_CASTING, playerVelocity);
             break;
         }
 
@@ -88,6 +89,4 @@ void InputComponent::updateCommon(float deltaTime,
     default:
         break;
     }
-
-    playerState.update(deltaTime, playerVelocity);
 }
