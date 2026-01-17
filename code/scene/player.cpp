@@ -3,8 +3,8 @@
 #include <string>
 
 #include "../config.h"
-
 #include "../math/quaternion.h"
+#include "../player/playerConsts.h"
 
 #include "entity.h"
 #include "fish.h"

@@ -32,6 +32,8 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
         }
         break;
     case STATE_ATTACKING:
+        mDelayActionTimer = 5.0f;
+        break;
     case STATE_CASTING:
     case STATE_STUNNED:
     default:
@@ -86,11 +88,12 @@ void PlayerAi::move_to_target(InputState &out)
     Vector3 distance;
     Vector3::sub(&mMovementTarget, &mPlayer->position, &distance);
 
-    if (Vector3::magSqrd(&distance) < 0.1f)
+    float distanceThreshold = mTarget ? HITBOX_RADIUS * HITBOX_RADIUS : 1.f;
+    if (Vector3::magSqrd(&distance) < distanceThreshold)
     {
         out.move = {0.0f, 0.0f};
-        out.fish = mBehavior == BEHAVE_FISHERMAN;
-        out.attack = mBehavior == BEHAVE_BULLY;
+        out.fish = mTarget == nullptr;
+        out.attack = mTarget != nullptr;
         return;
     }
 

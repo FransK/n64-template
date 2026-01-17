@@ -1,6 +1,18 @@
 #ifndef PLAYER_CONSTS_H
 #define PLAYER_CONSTS_H
 
+#include <cstdint>
+
+constexpr float BILLBOARD_YOFFSET = 200.f;
+
+constexpr float HITBOX_RADIUS = 8.f;
+constexpr float ATTACK_OFFSET = 5.f;
+constexpr float ATTACK_RADIUS = 10.f;
+
+constexpr float SHOVE_DIST = 7.f;
+
+constexpr int8_t FIRST_PLAYER_COLLIDER_GROUP = 1;
+
 constexpr float BASE_SPEED = 70.f;
 
 constexpr float CATCH_TIMER = 1.f;

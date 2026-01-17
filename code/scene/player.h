@@ -15,28 +15,18 @@
 
 using namespace Math;
 
+constexpr Collision::ColliderType PlayerColliderType = {
+    .minkowskiSum = Collision::Cylinder::MinkowskiSum,
+    .boundingBoxCalculator = Collision::Cylinder::BoundingBox,
+    .data = {
+        .cylinder = {
+            .radius = 5.0f,
+            .halfHeight = 12.0f}},
+    .bounce = 0.0f,
+    .friction = 0.0f};
+
 namespace Fishing
 {
-    constexpr float BILLBOARD_YOFFSET = 200.f;
-
-    constexpr float HITBOX_RADIUS = 5.f;
-    constexpr float ATTACK_OFFSET = 5.f;
-    constexpr float ATTACK_RADIUS = 10.f;
-
-    constexpr float SHOVE_DIST = 7.f;
-
-    constexpr int8_t FIRST_PLAYER_COLLIDER_GROUP = 1;
-
-    constexpr Collision::ColliderType PlayerColliderType = {
-        .minkowskiSum = Collision::Cylinder::MinkowskiSum,
-        .boundingBoxCalculator = Collision::Cylinder::BoundingBox,
-        .data = {
-            .cylinder = {
-                .radius = 5.0f,
-                .halfHeight = 12.0f}},
-        .bounce = 0.0f,
-        .friction = 0.0f};
-
     class Player
     {
     private:
