@@ -62,6 +62,19 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
     }
 }
 
+void PlayerState::init(int *fishCaught, AnimationComponent *animationComponent)
+{
+    mFishCaught = fishCaught;
+    mAnimationComponent = animationComponent;
+}
+
+void PlayerState::reset()
+{
+    mState = STATE_IDLE;
+    mStateTimer = 0.0f;
+    mActionSuccess = false;
+}
+
 void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger, bool stunned)
 {
     if (mState != STATE_STUNNED && stunned)
