@@ -11,6 +11,7 @@ namespace Math
 
         static void add(const Vector3 *a, const Vector3 *b, Vector3 *out);
         static void addScaled(const Vector3 *a, const Vector3 *normal, float scale, Vector3 *out);
+        static void copy(const Vector3 *in, Vector3 *out);
         static void cross(const Vector3 *a, const Vector3 *b, Vector3 *out);
         static float dot(const Vector3 *a, const Vector3 *b);
         static bool isZero(const Vector3 *a);

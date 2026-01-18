@@ -58,6 +58,8 @@ int main()
 
     while (1)
     {
+        global_game_ending = false;
+
         float accumulator = 0;
         const float dt = Core::DELTA_TIME;
 
@@ -85,6 +87,7 @@ int main()
             mixer_try_play();
 
             // Unfixed loop
+            Core::core_set_subtick(accumulator / dt);
             world->loop(frametime);
         }
 

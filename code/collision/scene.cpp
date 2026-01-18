@@ -193,7 +193,7 @@ void Scene::collide(Collider *a, Collider *b)
     if (a->isTrigger || b->isTrigger)
     {
         // TODO: Trigger event
-        debugf("Hit trigger");
+        debugf("Hit trigger\n");
         return;
     }
 

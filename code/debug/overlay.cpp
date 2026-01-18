@@ -10,7 +10,7 @@ namespace Debug
 {
     constexpr float barWidth = 200.0f;
     constexpr float barHeight = 3.0f;
-    constexpr float barRefTimeMs = 1000.0f / 30.0f; // FPS
+    constexpr float barRefTimeMs = 1000.0f / 60.0f; // FPS
 
     constexpr color_t COLOR_BVH{0, 0xAA, 0x22, 0xFF};
     constexpr color_t COLOR_COLL{0x22, 0xFF, 0, 0xFF};
@@ -36,7 +36,7 @@ void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTi
     uint64_t newTicksSelf = get_ticks();
 
     auto btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
-    auto held = joypad_get_buttons_held(JOYPAD_PORT_1);
+    // auto held = joypad_get_buttons_held(JOYPAD_PORT_1);
 
     if (menu.items.empty())
     {
@@ -115,7 +115,7 @@ void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTi
 
     Debug::printStart();
     Debug::printf(posX + barWidth + 2, 14, "FPS %.2f", display_get_fps());
-    // Debug::printf(posX + barWidth + 2, 34, "Cam %.2f", scene.getCamera().pos.x);
+    Debug::printf(posX + barWidth + 2, 34, "Buffers %.2d", display_get_num_buffers());
 
     heap_stats_t heap_stats;
     sys_get_heap_stats(&heap_stats);

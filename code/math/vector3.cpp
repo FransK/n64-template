@@ -23,6 +23,13 @@ void Vector3::addScaled(const Vector3 *a, const Vector3 *normal, float scale, Ve
     out->z = a->z + normal->z * scale;
 }
 
+void Vector3::copy(const Vector3 *in, Vector3 *out)
+{
+    out->x = in->x;
+    out->y = in->y;
+    out->z = in->z;
+}
+
 void Vector3::cross(const Vector3 *a, const Vector3 *b, Vector3 *out)
 {
     out->x = a->y * b->z - a->z * b->y;
