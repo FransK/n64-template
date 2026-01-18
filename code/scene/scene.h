@@ -22,9 +22,9 @@ using namespace Core;
 
 namespace Fishing
 {
-    constexpr float INTRO_TIME = 1.f;
-    constexpr float GAME_TIME = 30.f;
-    constexpr float GAME_OVER_TIME = 5.f;
+    constexpr float INTRO_TIME = 3.f;
+    constexpr float GAME_TIME = 60.f;
+    constexpr float GAME_OVER_TIME = 3.f;
 
     constexpr uint8_t COLOR_AMBIENT[4] = {0xAA, 0xAA, 0xAA, 0xFF};
     constexpr uint8_t COLOR_DIR[4] = {0xFF, 0xAA, 0xAA, 0xFF};
@@ -89,6 +89,7 @@ namespace Fishing
         const CollisionScene &getCollScene();
         void update_fixed(float deltaTime);
         void update(float deltaTime);
+        void reset();
 
         Scene();
         ~Scene();

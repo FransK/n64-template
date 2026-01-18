@@ -14,6 +14,7 @@ namespace Fishing
 
         void fixedloop(float deltatime);
         void loop(float deltatime);
+        void reset();
 
     private:
         Scene *scene;

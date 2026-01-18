@@ -116,7 +116,7 @@ namespace Fishing
         case State::GAME_OVER:
             if (mStateTime <= 0)
             {
-                core_game_end();
+                Core::core_game_end();
             }
             return;
         default:
@@ -173,15 +173,7 @@ namespace Fishing
 
         // === Update Collision Scene === //
         mCollisionScene.update(deltaTime, mStunnedIds);
-        ticksAnimationUpdate = get_ticks();
-        ticksCollisionUpdate = ticksAnimationUpdate - ticksCollisionUpdate;
-
-        // === Update Animations === //
-        for (auto &animComp : mAnimationComponents)
-        {
-            animComp.update(deltaTime);
-        }
-        ticksAnimationUpdate = get_ticks() - ticksAnimationUpdate;
+        ticksCollisionUpdate = get_ticks() - ticksCollisionUpdate;
 
         // === Keep Track of Leaders === //
         mCurrTopScore = 0;
@@ -212,6 +204,14 @@ namespace Fishing
                     showFPS = !showFPS;
             }
         }
+
+        // === Update Animations === //
+        ticksAnimationUpdate = get_ticks();
+        for (auto &animComp : mAnimationComponents)
+        {
+            animComp.update(deltaTime);
+        }
+        ticksAnimationUpdate = get_ticks() - ticksAnimationUpdate;
 
         // === Attach RDP === //
         mLastFB = mCurrentFB;
@@ -317,5 +317,29 @@ namespace Fishing
     const CollisionScene &Scene::getCollScene()
     {
         return mCollisionScene;
+    }
+
+    void Scene::reset()
+    {
+        // Reset player positions and rotations
+        PlayerData initialPositions[MAX_PLAYERS] = {
+            {{-25, 0.0f, 0}, {1, 0}},
+            {{0, 0.0f, -25}, {0, 1}},
+            {{25, 0.0f, 0}, {-1, 0}},
+            {{0, 0.0f, 25}, {0, -1}}};
+
+        for (size_t i = 0; i < MAX_PLAYERS; i++)
+        {
+            mPlayerData[i] = initialPositions[i];
+            mPlayerStates[i].reset();
+            mFishCaught[i] = 0;
+            mWinners[i] = 0;
+            mStunnedIds[i] = -1;
+        }
+
+        // Reset game state
+        mState = State::INTRO;
+        mStateTime = INTRO_TIME;
+        mCurrTopScore = 0;
     }
 }

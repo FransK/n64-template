@@ -55,18 +55,21 @@ int main()
     bool joinedPlayers[Core::MAX_PLAYERS] = {true, false, false, false};
     Core::core_set_playercount(joinedPlayers);
     Core::core_set_aidifficulty(Core::AiDiff::DIFF_EASY);
+    Core::core_set_subtick(0.0);
+
+    Fishing::World *world = new Fishing::World();
 
     while (1)
     {
-        global_game_ending = false;
+        Core::global_game_ending = false;
+        Core::core_reset_winners();
+        world->reset();
 
         float accumulator = 0;
         const float dt = Core::DELTA_TIME;
 
-        Fishing::World *world = new Fishing::World();
-
         // Program loop
-        while (!global_game_ending)
+        while (!Core::global_game_ending)
         {
             float frametime = display_get_delta_time();
 
@@ -90,7 +93,5 @@ int main()
             Core::core_set_subtick(accumulator / dt);
             world->loop(frametime);
         }
-
-        delete world;
     }
 }

@@ -14,8 +14,17 @@ World::~World()
 {
     delete scene;
 
-    t3d_destroy();
     display_close();
+    t3d_destroy();
+}
+
+/*==============================
+    reset
+    Resets the game state for a new round.
+==============================*/
+void World::reset()
+{
+    scene->reset();
 }
 
 /*==============================

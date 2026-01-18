@@ -40,6 +40,13 @@ public:
         mAnimationComponent = animationComponent;
     }
 
+    void reset()
+    {
+        mState = STATE_IDLE;
+        mStateTimer = 0.0f;
+        mActionSuccess = false;
+    }
+
     bool canCatch() const { return mState == STATE_FISHING && mStateTimer < CATCH_TIMER; }
     void changeState(const PlayerStateEnum &newState, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger);
     void setActionSuccess(bool success) { mActionSuccess = success; }

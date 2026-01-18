@@ -84,16 +84,16 @@ namespace Core
     void core_reset_winners();
 
     // Player info
-    inline static Player global_core_players[JOYPAD_PORT_COUNT]{};
-    inline static uint32_t global_core_playercount{1};
-    inline static AiDiff global_core_aidifficulty{AI_DIFFICULTY};
+    extern Player global_core_players[JOYPAD_PORT_COUNT];
+    extern uint32_t global_core_playercount;
+    extern AiDiff global_core_aidifficulty;
 
     // Game info
-    inline static bool global_core_playeriswinner[MAX_PLAYERS]{};
-    inline static bool global_game_ending{false};
+    extern bool global_core_playeriswinner[MAX_PLAYERS];
+    extern bool global_game_ending;
 
     // Core info
-    inline static double global_core_subtick{0};
+    extern double global_core_subtick;
 };
 
 #endif
