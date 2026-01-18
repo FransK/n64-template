@@ -5,7 +5,8 @@ void InputComponent::updateInputPlayer(float deltaTime,
                                        PlayerState &playerState,
                                        PlayerData &playerData,
                                        Collision::Scene &collScene,
-                                       Collision::Collider *damageTrigger)
+                                       Collision::Collider *damageTrigger,
+                                       bool stunned)
 {
     auto btn = joypad_get_buttons_pressed(port);
     auto inputs = joypad_get_inputs(port);
@@ -15,7 +16,7 @@ void InputComponent::updateInputPlayer(float deltaTime,
         .fish = btn.a != 0,
         .attack = btn.b != 0};
 
-    updateCommon(deltaTime, playerState, playerData, collScene, damageTrigger);
+    updateCommon(deltaTime, playerState, playerData, collScene, damageTrigger, stunned);
 }
 
 void InputComponent::updateInputAI(float deltaTime,
@@ -23,20 +24,22 @@ void InputComponent::updateInputAI(float deltaTime,
                                    PlayerState &playerState,
                                    PlayerData &playerData,
                                    Collision::Scene &collScene,
-                                   Collision::Collider *damageTrigger)
+                                   Collision::Collider *damageTrigger,
+                                   bool stunned)
 {
     mInputState = inputState;
 
-    updateCommon(deltaTime, playerState, playerData, collScene, damageTrigger);
+    updateCommon(deltaTime, playerState, playerData, collScene, damageTrigger, stunned);
 }
 
 void InputComponent::updateCommon(float deltaTime,
                                   PlayerState &playerState,
                                   PlayerData &playerData,
                                   Collision::Scene &collScene,
-                                  Collision::Collider *damageTrigger)
+                                  Collision::Collider *damageTrigger,
+                                  bool stunned)
 {
-    playerState.update(deltaTime, playerData, collScene, damageTrigger);
+    playerState.update(deltaTime, playerData, collScene, damageTrigger, stunned);
 
     switch (playerState.getState())
     {

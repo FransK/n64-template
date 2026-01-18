@@ -62,8 +62,15 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
     }
 }
 
-void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger)
+void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger, bool stunned)
 {
+    if (mState != STATE_STUNNED && stunned)
+    {
+        // Check if got stunned
+        changeState(STATE_STUNNED, playerData, collScene, damageTrigger);
+        return;
+    }
+
     if (mState == STATE_IDLE || mState == STATE_WALKING)
     {
         return;

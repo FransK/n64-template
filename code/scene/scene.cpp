@@ -125,6 +125,19 @@ namespace Fishing
 
         // === Update Inputs and AI === //
         ticksActorUpdate = get_ticks();
+        bool stunnedThisFrame[MAX_PLAYERS] = {false, false, false, false};
+        for (int i = 0; i < MAX_PLAYERS; i++)
+        {
+            for (int j = 0; j < MAX_PLAYERS; j++)
+            {
+                if (mStunnedIds[i] == mPlayers[j].get_collider()->entityId)
+                {
+                    stunnedThisFrame[j] = true;
+                    break;
+                }
+            }
+            mStunnedIds[i] = -1;
+        }
         for (size_t i = 0; i < core_get_playercount(); i++)
         {
             mInputComponents[i].updateInputPlayer(deltaTime,
@@ -132,7 +145,8 @@ namespace Fishing
                                                   mPlayerStates[i],
                                                   mPlayerData[i],
                                                   mCollisionScene,
-                                                  mPlayers[i].get_damage_trigger());
+                                                  mPlayers[i].get_damage_trigger(),
+                                                  stunnedThisFrame[i]);
         }
         for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
         {
@@ -151,13 +165,14 @@ namespace Fishing
                                               mPlayerStates[i],
                                               mPlayerData[i],
                                               mCollisionScene,
-                                              mPlayers[i].get_damage_trigger());
+                                              mPlayers[i].get_damage_trigger(),
+                                              stunnedThisFrame[i]);
         }
         ticksCollisionUpdate = get_ticks();
         ticksActorUpdate = ticksCollisionUpdate - ticksActorUpdate;
 
         // === Update Collision Scene === //
-        mCollisionScene.update(deltaTime);
+        mCollisionScene.update(deltaTime, mStunnedIds);
         ticksAnimationUpdate = get_ticks();
         ticksCollisionUpdate = ticksAnimationUpdate - ticksCollisionUpdate;
 

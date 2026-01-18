@@ -56,6 +56,7 @@ namespace Fishing
         CollisionScene mCollisionScene;
         AnimationComponent mAnimationComponents[MAX_PLAYERS];
         int mFishCaught[MAX_PLAYERS]{0};
+        int mStunnedIds[MAX_PLAYERS]{-1};
 
         /* Container class? */
         Player mPlayers[MAX_PLAYERS];

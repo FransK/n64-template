@@ -18,13 +18,15 @@ public:
                            PlayerState &playerState,
                            PlayerData &playerData,
                            Collision::Scene &collScene,
-                           Collision::Collider *damageTrigger);
+                           Collision::Collider *damageTrigger,
+                           bool stunned);
     void updateInputAI(float deltaTime,
                        InputState &inputState,
                        PlayerState &playerState,
                        PlayerData &playerData,
                        Collision::Scene &collScene,
-                       Collision::Collider *damageTrigger);
+                       Collision::Collider *damageTrigger,
+                       bool stunned);
 
 private:
     InputState mInputState{};
@@ -33,7 +35,8 @@ private:
                       PlayerState &playerState,
                       PlayerData &playerData,
                       Collision::Scene &collScene,
-                      Collision::Collider *damageTrigger);
+                      Collision::Collider *damageTrigger,
+                      bool stunned);
 };
 
 #endif

@@ -65,7 +65,7 @@ void Scene::deactivate(Collider *object)
     }
 }
 
-void Scene::update(float fixedTimeStep)
+void Scene::update(float fixedTimeStep, int (&stunnedIds)[4])
 {
     /* Integrate objects */
     for (auto *c : activeColliders)
@@ -75,7 +75,7 @@ void Scene::update(float fixedTimeStep)
     }
 
     /* Solve collisions */
-    runCollision();
+    runCollision(stunnedIds);
 
     /* Clamp to world */
     for (auto *c : activeColliders)
@@ -93,7 +93,7 @@ void Scene::debugDraw()
     }
 }
 
-void Scene::runCollision()
+void Scene::runCollision(int (&stunnedIds)[4])
 {
     // === Sweep and Prune === //
     int edgeCount = activeColliders.size() * 2;
@@ -137,7 +137,7 @@ void Scene::runCollision()
                 if (Box3D::hasOverlap(a->boundingBox, b->boundingBox))
                 {
                     // === Check Collider Shapes == //
-                    collide(a, b);
+                    collide(a, b, stunnedIds);
                 }
             }
 
@@ -167,7 +167,7 @@ void Scene::runCollision()
     }
 }
 
-void Scene::collide(Collider *a, Collider *b)
+void Scene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
 {
     if (!(a->collisionLayers & b->collisionLayers))
     {
@@ -192,7 +192,14 @@ void Scene::collide(Collider *a, Collider *b)
 
     if (a->isTrigger || b->isTrigger)
     {
-        // TODO: Trigger event
+        for (int i = 0; i < 4; i++)
+        {
+            if (stunnedIds[i] == -1)
+            {
+                stunnedIds[i] = a->isTrigger ? b->entityId : a->entityId;
+                break;
+            }
+        }
         debugf("Hit trigger\n");
         return;
     }
