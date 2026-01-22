@@ -4,7 +4,7 @@
 #include "math/vector3.h"
 #include "../../scene/playerColliders.h"
 
-void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger)
+void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playerData, Collision::CollisionScene &collScene, Collision::Collider *damageTrigger)
 {
     if (mState == newState)
     {
@@ -75,7 +75,7 @@ void PlayerState::reset()
     mActionSuccess = false;
 }
 
-void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Scene &collScene, Collision::Collider *damageTrigger, bool stunned)
+void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::CollisionScene &collScene, Collision::Collider *damageTrigger, bool stunned)
 {
     if (mState != STATE_STUNNED && stunned)
     {

@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "CollisionScene.h"
 
 #include <algorithm>
 #include <vector>
@@ -13,7 +13,7 @@
 using namespace Collision;
 using namespace Math;
 
-void Scene::add(Collider *object, bool isActive)
+void CollisionScene::add(Collider *object, bool isActive)
 {
     colliders.push_back(object);
     if (isActive)
@@ -22,7 +22,7 @@ void Scene::add(Collider *object, bool isActive)
     }
 }
 
-void Scene::remove(Collider *object)
+void CollisionScene::remove(Collider *object)
 {
     for (auto iter = activeColliders.begin(); iter != activeColliders.end(); ++iter)
     {
@@ -41,7 +41,7 @@ void Scene::remove(Collider *object)
     }
 }
 
-void Scene::activate(Collider *object)
+void CollisionScene::activate(Collider *object)
 {
     for (auto *c : activeColliders)
     {
@@ -54,7 +54,7 @@ void Scene::activate(Collider *object)
     activeColliders.push_back(object);
 }
 
-void Scene::deactivate(Collider *object)
+void CollisionScene::deactivate(Collider *object)
 {
     for (auto iter = activeColliders.begin(); iter != activeColliders.end(); ++iter)
     {
@@ -65,7 +65,7 @@ void Scene::deactivate(Collider *object)
     }
 }
 
-void Scene::update(float fixedTimeStep, int (&stunnedIds)[4])
+void CollisionScene::update(float fixedTimeStep, int (&stunnedIds)[4])
 {
     /* Integrate objects */
     for (auto *c : activeColliders)
@@ -85,7 +85,7 @@ void Scene::update(float fixedTimeStep, int (&stunnedIds)[4])
     }
 }
 
-void Scene::debugDraw()
+void CollisionScene::debugDraw()
 {
     for (auto *c : activeColliders)
     {
@@ -93,7 +93,7 @@ void Scene::debugDraw()
     }
 }
 
-void Scene::runCollision(int (&stunnedIds)[4])
+void CollisionScene::runCollision(int (&stunnedIds)[4])
 {
     // === Sweep and Prune === //
     int edgeCount = activeColliders.size() * 2;
@@ -167,7 +167,7 @@ void Scene::runCollision(int (&stunnedIds)[4])
     }
 }
 
-void Scene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
+void CollisionScene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
 {
     if (!(a->collisionLayers & b->collisionLayers))
     {
@@ -216,14 +216,14 @@ void Scene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
     correctOverlap(a, &result, 0.6f, friction, bounce);
 }
 
-void Scene::correctOverlap(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
+void CollisionScene::correctOverlap(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
 {
     Vector3::addScaled(object->position, &result->normal, result->penetration * ratio, object->position);
 
     correctVelocity(object, result, ratio, friction, bounce);
 }
 
-void Scene::correctVelocity(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
+void CollisionScene::correctVelocity(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
 {
     float velocityDot = Vector3::dot(object->velocity, &result->normal);
 
@@ -237,7 +237,7 @@ void Scene::correctVelocity(Collider *object, EpaResult *result, float ratio, fl
     }
 }
 
-void Scene::constrainToWorld(Collider *object)
+void CollisionScene::constrainToWorld(Collider *object)
 {
     if (object->isTrigger)
     {

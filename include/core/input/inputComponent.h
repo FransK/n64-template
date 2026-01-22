@@ -3,7 +3,7 @@
 
 #include <libdragon.h>
 
-#include "collision/scene.h"
+#include "collision/CollisionScene.h"
 
 #include "inputState.h"
 #include "playerData.h"
@@ -16,7 +16,7 @@ public:
                         InputState &inputState,
                         PlayerState &playerState,
                         PlayerData &playerData,
-                        Collision::Scene &collScene,
+                        Collision::CollisionScene &collScene,
                         Collision::Collider *damageTrigger,
                         bool stunned);
 };

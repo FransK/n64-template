@@ -7,7 +7,7 @@
 #include "../../core.h"
 
 #include "animation/animationComponent.h"
-#include "collision/scene.h"
+#include "collision/CollisionScene.h"
 #include "debug/overlay.h"
 #include "input/inputComponent.h"
 #include "input/playerData.h"
@@ -17,7 +17,7 @@
 #include "player.h"
 #include "playerAi.h"
 
-using CollisionScene = ::Collision::Scene;
+using CollisionScene = ::Collision::CollisionScene;
 using std::vector;
 using namespace Core;
 

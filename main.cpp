@@ -10,7 +10,7 @@ and provides a basic game loop.
 #include <memory>
 #include "include/config.h"
 #include "core.h"
-#include "code/world.h"
+#include "world.h"
 
 /*==============================
     main

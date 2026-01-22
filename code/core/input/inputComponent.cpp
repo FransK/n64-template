@@ -4,7 +4,7 @@ void InputComponent::update(float deltaTime,
                             InputState &inputState,
                             PlayerState &playerState,
                             PlayerData &playerData,
-                            Collision::Scene &collScene,
+                            Collision::CollisionScene &collScene,
                             Collision::Collider *damageTrigger,
                             bool stunned)
 {

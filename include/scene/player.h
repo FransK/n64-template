@@ -5,14 +5,14 @@
 #include <t3d/t3dmodel.h>
 #include <t3d/t3dskeleton.h>
 #include "animation/animationComponent.h"
-#include "collision/scene.h"
+#include "collision/CollisionScene.h"
 #include "collision/collider.h"
 #include "collision/cylinder.h"
 #include "collision/sphere.h"
 #include "input/inputState.h"
-#include "math/vector2.h"
 #include "input/playerData.h"
 #include "input/playerState.h"
+#include "math/vector2.h"
 #include "playerColliders.h"
 
 using namespace Math;
@@ -26,12 +26,12 @@ namespace Fishing
         Collision::Collider mDamageTrigger{};
         int mEntityId{-1};
 
-        Collision::Scene *mScene{};
+        Collision::CollisionScene *mScene{};
         PlayerData *mPlayerData{};
         PlayerState *mPlayerState{};
 
     public:
-        void init(Collision::Scene *scene, PlayerData *data, PlayerState *state, int8_t playerNumber);
+        void init(Collision::CollisionScene *scene, PlayerData *data, PlayerState *state, int8_t playerNumber);
         void draw_billboard(T3DViewport &viewport) const;
 
         Collision::Collider *get_collider() { return &mCollider; }

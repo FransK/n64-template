@@ -5,14 +5,12 @@
 #include "collider.h"
 #include "epa.h"
 
-using namespace Collision;
-
 namespace Collision
 {
-    class Scene
+    class CollisionScene
     {
     public:
-        Scene() = default;
+        CollisionScene() = default;
 
         void add(Collider *object, bool isActive = true);
         void remove(Collider *object);

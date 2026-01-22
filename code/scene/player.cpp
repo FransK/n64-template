@@ -15,7 +15,7 @@ using namespace Math;
 
 namespace Fishing
 {
-    void Player::init(Collision::Scene *scene, PlayerData *data, PlayerState *state, int8_t playerNumber)
+    void Player::init(Collision::CollisionScene *scene, PlayerData *data, PlayerState *state, int8_t playerNumber)
     {
         mScene = scene;
         mPlayerData = data;
@@ -31,7 +31,7 @@ namespace Fishing
             .scale = 1.0f,
             .hasGravity = true,
             .isFixed = false,
-            .collisionLayers = CollisionLayerTangible,
+            .collisionLayers = Collision::CollisionLayerTangible,
             .collisionGroup = uint16_t(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
         };
 
@@ -49,7 +49,7 @@ namespace Fishing
             .scale = 1.0f,
             .hasGravity = false,
             .isTrigger = true,
-            .collisionLayers = CollisionLayerTangible,
+            .collisionLayers = Collision::CollisionLayerTangible,
             .collisionGroup = uint16_t(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
         };
 

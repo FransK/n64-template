@@ -1,6 +1,7 @@
 #include "playerAi.h"
 
 #include "../../core.h"
+#include "collider.h"
 
 void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out)
 {
@@ -128,6 +129,6 @@ Vector3 PlayerAi::find_closest_fish() const
 {
     Vector3 position = mPlayer->position;
     Vector3 closestFish;
-    Vector3::normAndScale(&position, PLAYING_R, &closestFish);
+    Vector3::normAndScale(&position, Collision::PLAYING_R, &closestFish);
     return closestFish;
 }

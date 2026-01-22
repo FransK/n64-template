@@ -125,7 +125,7 @@ void Debug::draw(uint16_t *fb)
 {
     if (lines.empty())
         return;
-    // debugf("Drawing %d lines\n", lines.size());
+
     rspq_wait();
 
     for (auto &line : lines)
