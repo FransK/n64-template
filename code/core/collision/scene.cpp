@@ -200,7 +200,6 @@ void Scene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
                 break;
             }
         }
-        debugf("Hit trigger\n");
         return;
     }
 

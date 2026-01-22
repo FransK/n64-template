@@ -54,7 +54,6 @@ void Core::core_set_playercount(bool *enabledconts)
         }
     }
     global_core_playercount = plynum;
-    debugf("Core: Set player count to %d\n", global_core_playercount);
 }
 
 void Core::core_set_aidifficulty(AiDiff difficulty)

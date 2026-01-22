@@ -19,6 +19,6 @@ constexpr Collision::ColliderType DamageTriggerType = {
     .boundingBoxCalculator = Collision::Sphere::BoundingBox,
     .data = {
         .sphere = {
-            .radius = 3.0f}},
+            .radius = 4.0f}},
     .bounce = 0.0f,
     .friction = 0.0f};

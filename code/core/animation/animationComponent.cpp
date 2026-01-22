@@ -1,9 +1,7 @@
 #include "animation/animationComponent.h"
 #include "math/quaternion.h"
 
-constexpr float SHOVE_TIME_SCALE = 2.0f;
-
-void AnimationComponent::init(T3DModel *model, color_t primColor)
+void AnimationComponent::init(T3DModel *model, PlayerState *playerState, color_t primColor)
 {
     mModel = model;
     mPrimColor = primColor;
@@ -120,4 +118,29 @@ uint32_t AnimationComponent::draw(const Vector3 &position, const Vector2 &rotati
 
     rspq_block_run(mDplPlayer);
     return mModel->totalVertCount;
+}
+
+void AnimationComponent::on_player_state_change(const PlayerState &state)
+{
+    switch (state.getState())
+    {
+    case STATE_IDLE:
+        play_animation(Anim::IDLE);
+        break;
+    case STATE_WALKING:
+        play_animation(Anim::RUN);
+        break;
+    case STATE_ATTACKING:
+        play_animation(Anim::SHOVE);
+        break;
+    case STATE_STUNNED:
+        play_animation(Anim::RECEIVE_SHOVE);
+        break;
+    case STATE_CASTING:
+        play_animation(Anim::CAST);
+        break;
+    case STATE_FISHING:
+        play_animation(Anim::IDLE);
+        break;
+    }
 }

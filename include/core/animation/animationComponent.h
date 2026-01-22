@@ -5,6 +5,7 @@
 
 #include "math/vector2.h"
 #include "math/vector3.h"
+#include "playerState.h"
 
 #include "anim.h"
 
@@ -15,17 +16,21 @@ Animation Component
 -
 Encapsulates both animation and rendering
 */
-class AnimationComponent
+class AnimationComponent : public Observer<PlayerState>
 {
 public:
-    AnimationComponent() = default;
+    AnimationComponent()
+        : Observer<PlayerState>([this](const PlayerState &state)
+                                { this->on_player_state_change(state); }) {};
     ~AnimationComponent();
 
-    void init(T3DModel *model, color_t primColor);
+    void init(T3DModel *model, PlayerState *playerState, color_t primColor);
     void update(float deltaTime);
     void play_animation(Anim anim);
     void update_animation(float deltaTime);
     uint32_t draw(const Vector3 &position, const Vector2 &rotation) const;
+
+    void on_player_state_change(const PlayerState &state);
 
 private:
     T3DModel *mModel{};

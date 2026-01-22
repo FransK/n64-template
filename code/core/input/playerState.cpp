@@ -33,40 +33,39 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
                                      playerData.position.y + PlayerColliderType.data.cylinder.halfHeight,
                                      playerData.position.z + -playerData.rotation.y * ATTACK_OFFSET};
         collScene.activate(damageTrigger);
-        mAnimationComponent->play_animation(Anim::SHOVE);
+        notify();
         break;
     case STATE_CASTING:
         mStateTimer = CAST_TIME;
         playerData.velocity = {0.0f, 0.0f, 0.0f};
-        mAnimationComponent->play_animation(Anim::CAST);
+        notify();
         break;
     case STATE_FISHING:
         // mStateTimer = Fish::get_new_timer();
         mStateTimer = 4.0f; // Temporary fixed timer
         playerData.velocity = {0.0f, 0.0f, 0.0f};
-        mAnimationComponent->play_animation(Anim::IDLE);
+        notify();
         break;
     case STATE_STUNNED:
         mStateTimer = RECEIVE_SHOVE_TIME;
         playerData.velocity = {0.0f, 0.0f, 0.0f};
-        mAnimationComponent->play_animation(Anim::RECEIVE_SHOVE);
+        notify();
         break;
     case STATE_IDLE:
         mStateTimer = 0.0f;
         playerData.velocity = {0.0f, 0.0f, 0.0f};
-        mAnimationComponent->play_animation(Anim::IDLE);
+        notify();
         break;
     case STATE_WALKING:
         mStateTimer = 0.0f;
-        mAnimationComponent->play_animation(Anim::RUN);
+        notify();
         break;
     }
 }
 
-void PlayerState::init(int *fishCaught, AnimationComponent *animationComponent)
+void PlayerState::init(int *fishCaught)
 {
     mFishCaught = fishCaught;
-    mAnimationComponent = animationComponent;
 }
 
 void PlayerState::reset()
@@ -102,5 +101,24 @@ void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Sce
 
         // After other timed states, go back to idle
         changeState(STATE_IDLE, playerData, collScene, damageTrigger);
+    }
+}
+
+bool PlayerState::attach(PlayerStateObserver *observer)
+{
+    auto [pos, success] = mObservers.insert(observer);
+    return success;
+}
+
+bool PlayerState::detach(PlayerStateObserver *observer)
+{
+    return mObservers.erase(observer) > 0U;
+}
+
+void PlayerState::notify()
+{
+    for (auto *observer : mObservers)
+    {
+        observer->update(*this);
     }
 }

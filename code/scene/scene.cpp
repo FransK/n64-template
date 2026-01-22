@@ -53,14 +53,14 @@ namespace Fishing
         // === Initialize the players and components === //
         PlayerData initialPositions[MAX_PLAYERS] = {
             {{-25, 0.0f, 0}, {1, 0}},
-            {{0, 0.0f, -25}, {0, 1}},
+            {{0, 0.0f, -25}, {0, -1}},
             {{25, 0.0f, 0}, {-1, 0}},
-            {{0, 0.0f, 25}, {0, -1}}};
+            {{0, 0.0f, 25}, {0, 1}}};
 
         for (size_t i = 0; i < MAX_PLAYERS; i++)
         {
             mPlayerData[i] = initialPositions[i];
-            mPlayerStates[i].init(&mFishCaught[i], &mAnimationComponents[i]);
+            mPlayerStates[i].init(&mFishCaught[i]);
 
             // Use make_unique to create polymorphic objects
             if (i < core_get_playercount())
@@ -71,7 +71,8 @@ namespace Fishing
             {
                 mInputComponents[i] = std::make_unique<InputComponent>();
             }
-            mAnimationComponents[i].init(mPlayerModel, COLORS[i]);
+            mAnimationComponents[i].init(mPlayerModel, &mPlayerStates[i], COLORS[i]);
+            mPlayerStates[i].attach(&mAnimationComponents[i]); // Hook up observer
             mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
             mAIPlayers[i].init(&mPlayerData[i]);
 
