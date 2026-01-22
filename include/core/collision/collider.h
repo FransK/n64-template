@@ -5,6 +5,7 @@
 #include "math/vector2.h"
 #include "math/vector3.h"
 #include "math/box3d.h"
+#include "scene/actor.h"
 
 #include "colliderType.h"
 
@@ -24,9 +25,7 @@ namespace Collision
     struct Collider
     {
         int entityId{};
-        Vector3 *position{};
-        Vector2 *rotation{};
-        Vector3 *velocity{};
+        Actor *actor{};
         Vector3 center{};
         ColliderType type{};
         Box3D boundingBox{};

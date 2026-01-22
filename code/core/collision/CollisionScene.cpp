@@ -218,22 +218,26 @@ void CollisionScene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
 
 void CollisionScene::correctOverlap(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
 {
-    Vector3::addScaled(object->position, &result->normal, result->penetration * ratio, object->position);
+    Vector3 position = object->actor->getPosition();
+    Vector3::addScaled(&position, &result->normal, result->penetration * ratio, &position);
+    object->actor->setPosition(position);
 
     correctVelocity(object, result, ratio, friction, bounce);
 }
 
 void CollisionScene::correctVelocity(Collider *object, EpaResult *result, float ratio, float friction, float bounce)
 {
-    float velocityDot = Vector3::dot(object->velocity, &result->normal);
+    Vector3 velocity = object->actor->getVelocity();
+    float velocityDot = Vector3::dot(&velocity, &result->normal);
 
     if ((velocityDot < 0) == (ratio < 0))
     {
         struct Vector3 tangentVelocity;
 
-        Vector3::addScaled(object->velocity, &result->normal, -velocityDot, &tangentVelocity);
+        Vector3::addScaled(&velocity, &result->normal, -velocityDot, &tangentVelocity);
         Vector3::scale(&tangentVelocity, 1.0f - friction, &tangentVelocity);
-        Vector3::addScaled(&tangentVelocity, &result->normal, velocityDot * -bounce, object->velocity);
+        Vector3::addScaled(&tangentVelocity, &result->normal, velocityDot * -bounce, &velocity);
+        object->actor->setVelocity(velocity);
     }
 }
 
@@ -244,15 +248,16 @@ void CollisionScene::constrainToWorld(Collider *object)
         return;
     }
 
-    if ((*object->position).y < 0.0f)
+    if (object->actor->getPosition().y < 0.0f)
     {
         EpaResult result;
 
-        result.contactA = *object->position;
-        result.contactB = *object->position;
+        Vector3 position = object->actor->getPosition();
+        result.contactA = position;
+        result.contactB = position;
         result.contactB.y = 0.0f;
         result.normal = Vec3Up;
-        result.penetration = (*object->position).y;
+        result.penetration = position.y;
         correctOverlap(object, &result, -1.0f, object->type.friction, object->type.bounce);
     }
 }

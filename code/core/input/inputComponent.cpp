@@ -54,8 +54,8 @@ void InputComponent::update(float deltaTime,
             Vector2::norm(&inputState.move, &normMove);
             // Start walking
             playerState.changeState(STATE_WALKING, playerData, collScene, damageTrigger);
-            playerData.rotation = {normMove.x, normMove.y};
-            playerData.velocity = {normMove.x * BASE_SPEED, 0.0f, -normMove.y * BASE_SPEED};
+            playerData.setRotation({normMove.x, normMove.y});
+            playerData.setVelocity({normMove.x * BASE_SPEED, 0.0f, -normMove.y * BASE_SPEED});
             break;
         }
 

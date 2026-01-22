@@ -8,7 +8,7 @@
 #include "math/vector3.h"
 #include "input/playerConsts.h"
 
-#include "entity.h"
+#include "scene/entity.h"
 #include "fish.h"
 
 using namespace Math;
@@ -24,9 +24,7 @@ namespace Fishing
 
         mCollider = Collision::Collider{
             .entityId = mEntityId,
-            .position = &data->position,
-            .rotation = &data->rotation,
-            .velocity = &data->velocity,
+            .actor = data,
             .type = PlayerColliderType,
             .scale = 1.0f,
             .hasGravity = true,
@@ -42,9 +40,7 @@ namespace Fishing
 
         mDamageTrigger = Collision::Collider{
             .entityId = mEntityId,
-            .position = &data->attackPosition,
-            .rotation = &data->attackRotation,
-            .velocity = &data->attackVelocity,
+            .actor = data->getAttackActor(),
             .type = DamageTriggerType,
             .scale = 1.0f,
             .hasGravity = false,
@@ -77,9 +73,9 @@ namespace Fishing
 
         // Screen position
         T3DVec3 worldPos = (T3DVec3){{
-            mPlayerData->position.x + localPos.v[0] * 0.125f,
-            mPlayerData->position.y + localPos.v[1] * 0.125f,
-            mPlayerData->position.z + localPos.v[2] * 0.125f,
+            mPlayerData->getPosition().x + localPos.v[0] * 0.125f,
+            mPlayerData->getPosition().y + localPos.v[1] * 0.125f,
+            mPlayerData->getPosition().z + localPos.v[2] * 0.125f,
         }};
 
         T3DVec3 screenPos;

@@ -3,17 +3,19 @@
 
 #include "math/vector2.h"
 #include "math/vector3.h"
+#include "scene/actor.h"
 
 using namespace Math;
 
-struct PlayerData
+class PlayerData : public Actor
 {
-    Vector3 position{};
-    Vector2 rotation{};
-    Vector3 velocity{};
-    Vector3 attackPosition{};
-    Vector2 attackRotation{Vec2Zero};
-    Vector3 attackVelocity{Vec3Zero};
+public:
+    PlayerData() : Actor() {}
+
+    [[nodiscard]] Actor *getAttackActor() { return &mAttackActor; }
+
+private:
+    Actor mAttackActor{};
 };
 
 #endif

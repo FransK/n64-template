@@ -80,14 +80,15 @@ void PlayerAi::update_movement_target()
 {
     if (mTarget)
     {
-        mMovementTarget = mTarget->position;
+        mMovementTarget = mTarget->getPosition();
     }
 }
 
 void PlayerAi::move_to_target(InputState &out)
 {
+    Vector3 position = mPlayer->getPosition();
     Vector3 distance;
-    Vector3::sub(&mMovementTarget, &mPlayer->position, &distance);
+    Vector3::sub(&mMovementTarget, &position, &distance);
 
     float distanceThreshold = mTarget ? HITBOX_RADIUS * HITBOX_RADIUS : 1.f;
     if (Vector3::magSqrd(&distance) < distanceThreshold)
@@ -127,7 +128,7 @@ PlayerData *PlayerAi::find_winner_target(int playerNumber, PlayerData *players, 
 
 Vector3 PlayerAi::find_closest_fish() const
 {
-    Vector3 position = mPlayer->position;
+    Vector3 position = mPlayer->getPosition();
     Vector3 closestFish;
     Vector3::normAndScale(&position, Collision::PLAYING_R, &closestFish);
     return closestFish;

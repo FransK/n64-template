@@ -51,18 +51,23 @@ Scene::Scene()
     t3d_vec3_norm(&mLightDirVec);
 
     // === Initialize the players and components === //
-    PlayerData initialPositions[MAX_PLAYERS] = {
-        {{-25, 0.0f, 0}, {1, 0}},
-        {{0, 0.0f, -25}, {0, -1}},
-        {{25, 0.0f, 0}, {-1, 0}},
-        {{0, 0.0f, 25}, {0, 1}}};
+    Vector3 initialPositions[MAX_PLAYERS] = {
+        {-25, 0.0f, 0},
+        {0, 0.0f, -25},
+        {25, 0.0f, 0},
+        {0, 0.0f, 25}};
+    Vector2 initialRotations[MAX_PLAYERS] = {
+        {1, 0},
+        {0, -1},
+        {-1, 0},
+        {0, 1}};
 
     for (size_t i = 0; i < MAX_PLAYERS; i++)
     {
-        mPlayerData[i] = initialPositions[i];
+        mPlayerData[i].setPosition(initialPositions[i]);
+        mPlayerData[i].setRotation(initialRotations[i]);
         mPlayerStates[i].init(&mFishCaught[i]);
 
-        // Use make_unique to create polymorphic objects
         if (i < core_get_playercount())
         {
             mInputComponents[i] = std::make_unique<PlayerInputComponent>((joypad_port_t)i);
@@ -258,7 +263,7 @@ void Scene::update(float deltaTime)
     // === Draw players (3D Pass) === //
     for (size_t i = 0; i < MAX_PLAYERS; i++)
     {
-        vertices += mAnimationComponents[i].draw(mPlayerData[i].position, mPlayerData[i].rotation);
+        vertices += mAnimationComponents[i].draw(mPlayerData[i].getPosition(), mPlayerData[i].getRotation());
     }
 
     // === Draw billboards (2D Pass) === //
@@ -328,15 +333,21 @@ const CollisionScene &Scene::getCollScene()
 void Scene::reset()
 {
     // Reset player positions and rotations
-    PlayerData initialPositions[MAX_PLAYERS] = {
-        {{-25, 0.0f, 0}, {1, 0}},
-        {{0, 0.0f, -25}, {0, 1}},
-        {{25, 0.0f, 0}, {-1, 0}},
-        {{0, 0.0f, 25}, {0, -1}}};
+    Vector3 initialPositions[MAX_PLAYERS] = {
+        {-25, 0.0f, 0},
+        {0, 0.0f, -25},
+        {25, 0.0f, 0},
+        {0, 0.0f, 25}};
+    Vector2 initialRotations[MAX_PLAYERS] = {
+        {1, 0},
+        {0, -1},
+        {-1, 0},
+        {0, 1}};
 
     for (size_t i = 0; i < MAX_PLAYERS; i++)
     {
-        mPlayerData[i] = initialPositions[i];
+        mPlayerData[i].setPosition(initialPositions[i]);
+        mPlayerData[i].setRotation(initialRotations[i]);
         mPlayerStates[i].reset();
         mFishCaught[i] = 0;
         mWinners[i] = 0;

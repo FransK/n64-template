@@ -28,32 +28,32 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
     {
     case STATE_ATTACKING:
         mStateTimer = SHOVE_TIME;
-        playerData.velocity = {0.0f, 0.0f, 0.0f};
-        playerData.attackPosition = {playerData.position.x + playerData.rotation.x * ATTACK_OFFSET,
-                                     playerData.position.y + PlayerColliderType.data.cylinder.halfHeight,
-                                     playerData.position.z + -playerData.rotation.y * ATTACK_OFFSET};
+        playerData.setVelocity({0.0f, 0.0f, 0.0f});
+        playerData.getAttackActor()->setPosition({playerData.getPosition().x + playerData.getRotation().x * ATTACK_OFFSET,
+                                                  playerData.getPosition().y + PlayerColliderType.data.cylinder.halfHeight,
+                                                  playerData.getPosition().z + -playerData.getRotation().y * ATTACK_OFFSET});
         collScene.activate(damageTrigger);
         notify();
         break;
     case STATE_CASTING:
         mStateTimer = CAST_TIME;
-        playerData.velocity = {0.0f, 0.0f, 0.0f};
+        playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
     case STATE_FISHING:
         // mStateTimer = Fish::get_new_timer();
         mStateTimer = 4.0f; // Temporary fixed timer
-        playerData.velocity = {0.0f, 0.0f, 0.0f};
+        playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
     case STATE_STUNNED:
         mStateTimer = RECEIVE_SHOVE_TIME;
-        playerData.velocity = {0.0f, 0.0f, 0.0f};
+        playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
     case STATE_IDLE:
         mStateTimer = 0.0f;
-        playerData.velocity = {0.0f, 0.0f, 0.0f};
+        playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
     case STATE_WALKING:
