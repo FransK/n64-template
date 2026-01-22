@@ -7,9 +7,10 @@ and provides a basic game loop.
 
 #include <libdragon.h>
 #include <rspq_profile.h>
-#include "config.h"
+#include <memory>
+#include "include/config.h"
 #include "core.h"
-#include "code/n64-fishing.h"
+#include "code/world.h"
 
 /*==============================
     main
@@ -57,13 +58,12 @@ int main()
     Core::core_set_aidifficulty(Core::AiDiff::DIFF_EASY);
     Core::core_set_subtick(0.0);
 
-    Fishing::World *world = new Fishing::World();
+    std::unique_ptr<Fishing::World> world = std::make_unique<Fishing::World>();
 
     while (1)
     {
         Core::global_game_ending = false;
         Core::core_reset_winners();
-        world->reset();
 
         float accumulator = 0;
         const float dt = Core::DELTA_TIME;
@@ -93,5 +93,7 @@ int main()
             Core::core_set_subtick(accumulator / dt);
             world->loop(frametime);
         }
+
+        world->reset();
     }
 }

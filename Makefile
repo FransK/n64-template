@@ -15,10 +15,10 @@ SRC = main.cpp core.cpp \
 	$(wildcard $(GAME_DIR)/**/*.cpp) \
 	$(wildcard $(GAME_DIR)/**/**/*.cpp)
 
-N64_CXXFLAGS += -std=gnu++17 -fno-exceptions
-
 include $(N64_INST)/include/n64.mk
 include $(N64_INST)/include/t3d.mk
+
+N64_CXXFLAGS += -std=gnu++17 -fno-exceptions -Iinclude $(foreach dir,$(shell find include -type d),-I$(dir))
 
 N64_ROM_SAVETYPE = eeprom4k
 ifeq ($(strip $(FINAL)),1)

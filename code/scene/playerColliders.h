@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../collision/colliderType.h"
-#include "../collision/cylinder.h"
-#include "../collision/sphere.h"
+#include "collision/colliderType.h"
+#include "collision/cylinder.h"
+#include "collision/sphere.h"
 
 constexpr Collision::ColliderType PlayerColliderType = {
     .minkowskiSum = Collision::Cylinder::MinkowskiSum,

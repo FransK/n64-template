@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../math/vector2.h"
-#include "../math/vector3.h"
-#include "../player/playerData.h"
-#include "../player/playerState.h"
+#include "math/vector2.h"
+#include "math/vector3.h"
+#include "input/playerData.h"
+#include "input/playerState.h"
 #include "player.h"
 
 enum AIBehavior : uint8_t

@@ -6,6 +6,7 @@
 #include "../debug/debugDraw.h"
 #include "../debug/overlay.h"
 #include "../math/vector2.h"
+#include "PlayerInputComponent.h"
 #include "timer.h"
 
 namespace Fishing
@@ -60,7 +61,16 @@ namespace Fishing
         {
             mPlayerData[i] = initialPositions[i];
             mPlayerStates[i].init(&mFishCaught[i], &mAnimationComponents[i]);
-            mInputComponents[i] = InputComponent();
+
+            // Use make_unique to create polymorphic objects
+            if (i < core_get_playercount())
+            {
+                mInputComponents[i] = std::make_unique<PlayerInputComponent>((joypad_port_t)i);
+            }
+            else
+            {
+                mInputComponents[i] = std::make_unique<InputComponent>();
+            }
             mAnimationComponents[i].init(mPlayerModel, COLORS[i]);
             mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
             mAIPlayers[i].init(&mPlayerData[i]);
@@ -140,13 +150,14 @@ namespace Fishing
         }
         for (size_t i = 0; i < core_get_playercount(); i++)
         {
-            mInputComponents[i].updateInputPlayer(deltaTime,
-                                                  core_get_playercontroller((PlyNum)i),
-                                                  mPlayerStates[i],
-                                                  mPlayerData[i],
-                                                  mCollisionScene,
-                                                  mPlayers[i].get_damage_trigger(),
-                                                  stunnedThisFrame[i]);
+            InputState inputState{};
+            mInputComponents[i]->update(deltaTime,
+                                        inputState,
+                                        mPlayerStates[i],
+                                        mPlayerData[i],
+                                        mCollisionScene,
+                                        mPlayers[i].get_damage_trigger(),
+                                        stunnedThisFrame[i]);
         }
         for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
         {
@@ -160,13 +171,13 @@ namespace Fishing
                                  aiInput);
 
             // Feed AI inputs to input component
-            mInputComponents[i].updateInputAI(deltaTime,
-                                              aiInput,
-                                              mPlayerStates[i],
-                                              mPlayerData[i],
-                                              mCollisionScene,
-                                              mPlayers[i].get_damage_trigger(),
-                                              stunnedThisFrame[i]);
+            mInputComponents[i]->update(deltaTime,
+                                        aiInput,
+                                        mPlayerStates[i],
+                                        mPlayerData[i],
+                                        mCollisionScene,
+                                        mPlayers[i].get_damage_trigger(),
+                                        stunnedThisFrame[i]);
         }
         ticksCollisionUpdate = get_ticks();
         ticksActorUpdate = ticksCollisionUpdate - ticksActorUpdate;
@@ -297,12 +308,6 @@ namespace Fishing
         {
             debugOvl.draw(*this, vertices, deltaTime);
             Debug::draw((uint16_t *)mCurrentFB->buffer);
-
-            // Debug::printStart();
-            // for (auto &ai : playerAI)
-            // {
-            //     ai.debugDraw();
-            // }
         }
         else if (showFPS)
         {

@@ -2,26 +2,14 @@
 #define N64BASE_CORE_H
 
 #include <libdragon.h>
-#include "config.h"
-#include "defs.h"
 
-#define FS_BASE_PATH "rom:/"
+#include "config.h"
 
 namespace Core
 {
     /***************************************************************
-                         Public Core Constants
-    ***************************************************************/
-
-    // Use this to standardize player colors
-    constexpr color_t PLAYER_COLOR_1 = RGBA32(255, 0, 0, 255);
-    constexpr color_t PLAYER_COLOR_2 = RGBA32(0, 255, 0, 255);
-    constexpr color_t PLAYER_COLOR_3 = RGBA32(0, 0, 255, 255);
-    constexpr color_t PLAYER_COLOR_4 = RGBA32(255, 255, 0, 255);
-
-    /***************************************************************
-                         Public Core Functions
-    ***************************************************************/
+                          Public Core Functions
+     ***************************************************************/
 
     /*==============================
         core_get_playercount
@@ -69,14 +57,6 @@ namespace Core
         Use this to mark your minigame as finished
     ==============================*/
     void core_game_end();
-
-    /***************************************************************
-                        Internal Core Functions
-    ***************************************************************/
-
-    constexpr float TICK_RATE = 60;
-    constexpr float DELTA_TIME = (1.0f / (double)TICK_RATE);
-    constexpr uint8_t MAX_PLAYERS = 4;
 
     void core_set_playercount(bool *enabledconts);
     void core_set_aidifficulty(AiDiff difficulty);

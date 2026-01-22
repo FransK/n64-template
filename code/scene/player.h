@@ -4,15 +4,15 @@
 #include <t3d/t3danim.h>
 #include <t3d/t3dmodel.h>
 #include <t3d/t3dskeleton.h>
-#include "../animation/animationComponent.h"
-#include "../collision/scene.h"
-#include "../collision/collider.h"
-#include "../collision/cylinder.h"
-#include "../collision/sphere.h"
-#include "../input/inputState.h"
-#include "../math/vector2.h"
-#include "../player/playerData.h"
-#include "../player/playerState.h"
+#include "animation/animationComponent.h"
+#include "collision/scene.h"
+#include "collision/collider.h"
+#include "collision/cylinder.h"
+#include "collision/sphere.h"
+#include "input/inputState.h"
+#include "math/vector2.h"
+#include "input/playerData.h"
+#include "input/playerState.h"
 #include "playerColliders.h"
 
 using namespace Math;

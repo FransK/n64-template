@@ -2,11 +2,11 @@
 
 #include <string>
 
-#include "../config.h"
-#include "../math/quaternion.h"
-#include "../math/vector2.h"
-#include "../math/vector3.h"
-#include "../player/playerConsts.h"
+#include "config.h"
+#include "math/quaternion.h"
+#include "math/vector2.h"
+#include "math/vector3.h"
+#include "input/playerConsts.h"
 
 #include "entity.h"
 #include "fish.h"
@@ -90,6 +90,6 @@ namespace Fishing
 
         const rdpq_textparms_t param{};
         std::string mBillboardText = mPlayerState->canCatch() ? "HOOKED!" : "Fishing...";
-        rdpq_text_printf(&param, FONT_BILLBOARD, x, y, "%s", mBillboardText.c_str());
+        rdpq_text_printf(&param, Core::FONT_BILLBOARD, x, y, "%s", mBillboardText.c_str());
     }
 }

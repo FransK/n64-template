@@ -1,16 +1,17 @@
 #pragma once
 
+#include <memory>
 #include <t3d/t3d.h>
 #include <vector>
 
 #include "../../core.h"
 
-#include "../animation/animationComponent.h"
-#include "../collision/scene.h"
-#include "../debug/overlay.h"
-#include "../input/inputComponent.h"
-#include "../player/playerData.h"
-#include "../player/playerState.h"
+#include "animation/animationComponent.h"
+#include "collision/scene.h"
+#include "debug/overlay.h"
+#include "input/inputComponent.h"
+#include "input/playerData.h"
+#include "input/playerState.h"
 
 #include "camera.h"
 #include "player.h"
@@ -38,6 +39,19 @@ namespace Fishing
 
     class Scene
     {
+    public:
+        Scene();
+        ~Scene();
+
+        long ticksActorUpdate{0};
+        long ticksCollisionUpdate{0};
+        long ticksAnimationUpdate{0};
+
+        const CollisionScene &getCollScene();
+        void update_fixed(float deltaTime);
+        void update(float deltaTime);
+        void reset();
+
     private:
         enum class State : uint8_t
         {
@@ -52,7 +66,7 @@ namespace Fishing
         PlayerData mPlayerData[MAX_PLAYERS];
         PlayerState mPlayerStates[MAX_PLAYERS];
         PlayerAi mAIPlayers[MAX_PLAYERS];
-        InputComponent mInputComponents[MAX_PLAYERS];
+        std::unique_ptr<InputComponent> mInputComponents[MAX_PLAYERS];
         CollisionScene mCollisionScene;
         AnimationComponent mAnimationComponents[MAX_PLAYERS];
         int mFishCaught[MAX_PLAYERS]{0};
@@ -80,18 +94,5 @@ namespace Fishing
         T3DVec3 mLightDirVec{};
 
         Debug::Overlay debugOvl{};
-
-    public:
-        long ticksActorUpdate{0};
-        long ticksCollisionUpdate{0};
-        long ticksAnimationUpdate{0};
-
-        const CollisionScene &getCollScene();
-        void update_fixed(float deltaTime);
-        void update(float deltaTime);
-        void reset();
-
-        Scene();
-        ~Scene();
     };
 }
