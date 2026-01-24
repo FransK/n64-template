@@ -1,11 +1,8 @@
 #pragma once
 
-namespace Fishing
-{
-    static int NextEntityId = 1;
+static int NextEntityId = 1;
 
-    static int GetNextEntityId()
-    {
-        return NextEntityId++;
-    }
+static int GetNextEntityId()
+{
+    return NextEntityId++;
 }

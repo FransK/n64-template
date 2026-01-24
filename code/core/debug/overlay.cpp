@@ -30,7 +30,7 @@ namespace Debug
     bool actorDebug = false;
 }
 
-void Debug::Overlay::draw(FishingScene &scene, uint32_t vertCount, float deltaTime)
+void Debug::Overlay::draw(Scene &scene, uint32_t vertCount, float deltaTime)
 {
     auto collScene = scene.getCollScene();
     uint64_t newTicksSelf = get_ticks();

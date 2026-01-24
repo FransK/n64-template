@@ -13,86 +13,85 @@
 #include "input/playerData.h"
 #include "input/playerState.h"
 
+// #include "ComponentVector.h"
+
 #include "camera.h"
 #include "player.h"
 #include "playerAi.h"
 
 using CollisionScene = ::Collision::CollisionScene;
-using std::vector;
 using namespace Core;
 
-namespace Fishing
+constexpr float INTRO_TIME = 3.f;
+constexpr float GAME_TIME = 60.f;
+constexpr float GAME_OVER_TIME = 3.f;
+
+constexpr uint8_t COLOR_AMBIENT[4] = {0xAA, 0xAA, 0xAA, 0xFF};
+constexpr uint8_t COLOR_DIR[4] = {0xFF, 0xAA, 0xAA, 0xFF};
+
+constexpr color_t COLORS[] = {
+    PLAYER_COLOR_1,
+    PLAYER_COLOR_2,
+    PLAYER_COLOR_3,
+    PLAYER_COLOR_4,
+};
+
+class Scene
 {
-    constexpr float INTRO_TIME = 3.f;
-    constexpr float GAME_TIME = 60.f;
-    constexpr float GAME_OVER_TIME = 3.f;
+public:
+    Scene();
+    ~Scene();
 
-    constexpr uint8_t COLOR_AMBIENT[4] = {0xAA, 0xAA, 0xAA, 0xFF};
-    constexpr uint8_t COLOR_DIR[4] = {0xFF, 0xAA, 0xAA, 0xFF};
+    long ticksActorUpdate{0};
+    long ticksCollisionUpdate{0};
+    long ticksAnimationUpdate{0};
 
-    constexpr color_t COLORS[] = {
-        PLAYER_COLOR_1,
-        PLAYER_COLOR_2,
-        PLAYER_COLOR_3,
-        PLAYER_COLOR_4,
-    };
+    const CollisionScene &getCollScene();
+    void update_fixed(float deltaTime);
+    void update(float deltaTime);
+    void reset();
 
-    class Scene
+private:
+    enum class State : uint8_t
     {
-    public:
-        Scene();
-        ~Scene();
+        INTRO = 0,
+        GAME,
+        GAME_OVER
+    } mState{};
 
-        long ticksActorUpdate{0};
-        long ticksCollisionUpdate{0};
-        long ticksAnimationUpdate{0};
+    float mStateTime{};
 
-        const CollisionScene &getCollScene();
-        void update_fixed(float deltaTime);
-        void update(float deltaTime);
-        void reset();
+    /* Player Data Block - Positions, Velocities, etc*/
+    std::array<PlayerData, MAX_PLAYERS> mPlayerData{};
+    std::array<PlayerState, MAX_PLAYERS> mPlayerStates{};
+    PlayerAi mAIPlayers[MAX_PLAYERS];
+    std::unique_ptr<InputComponent> mInputComponents[MAX_PLAYERS];
+    CollisionScene mCollisionScene;
+    // ComponentVector mAnimationComponents{};
+    std::vector<AnimationComponent> mAnimationComponents;
+    int mFishCaught[MAX_PLAYERS]{0};
+    int mStunnedIds[MAX_PLAYERS]{-1};
 
-    private:
-        enum class State : uint8_t
-        {
-            INTRO = 0,
-            GAME,
-            GAME_OVER
-        } mState{};
+    /* Container class? */
+    Player mPlayers[MAX_PLAYERS];
 
-        float mStateTime{};
+    uint8_t mWinners[MAX_PLAYERS]{0};
+    int mCurrTopScore{0};
 
-        /* Player Data Block - Positions, Velocities, etc*/
-        PlayerData mPlayerData[MAX_PLAYERS];
-        PlayerState mPlayerStates[MAX_PLAYERS];
-        PlayerAi mAIPlayers[MAX_PLAYERS];
-        std::unique_ptr<InputComponent> mInputComponents[MAX_PLAYERS];
-        CollisionScene mCollisionScene;
-        AnimationComponent mAnimationComponents[MAX_PLAYERS];
-        int mFishCaught[MAX_PLAYERS]{0};
-        int mStunnedIds[MAX_PLAYERS]{-1};
+    T3DModel *mPlayerModel{};
 
-        /* Container class? */
-        Player mPlayers[MAX_PLAYERS];
+    surface_t *mCurrentFB{};
+    surface_t *mLastFB{};
+    T3DModel *mMapModel{};
+    T3DMat4FP *mMapMatFP{};
+    rspq_block_t *mDplMap{};
 
-        uint8_t mWinners[MAX_PLAYERS]{0};
-        int mCurrTopScore{0};
+    rdpq_font_t *mFontBillboard{};
+    rdpq_font_t *mFontText{};
 
-        T3DModel *mPlayerModel{};
+    T3DViewport mViewport{};
+    Camera mCamera{};
+    T3DVec3 mLightDirVec{};
 
-        surface_t *mCurrentFB{};
-        surface_t *mLastFB{};
-        T3DModel *mMapModel{};
-        T3DMat4FP *mMapMatFP{};
-        rspq_block_t *mDplMap{};
-
-        rdpq_font_t *mFontBillboard{};
-        rdpq_font_t *mFontText{};
-
-        T3DViewport mViewport{};
-        Camera mCamera{};
-        T3DVec3 mLightDirVec{};
-
-        Debug::Overlay debugOvl{};
-    };
-}
+    Debug::Overlay debugOvl{};
+};

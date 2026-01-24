@@ -58,7 +58,7 @@ int main()
     Core::core_set_aidifficulty(Core::AiDiff::DIFF_EASY);
     Core::core_set_subtick(0.0);
 
-    std::unique_ptr<Fishing::World> world = std::make_unique<Fishing::World>();
+    std::unique_ptr<World> world = std::make_unique<World>();
 
     while (1)
     {

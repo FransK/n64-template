@@ -19,16 +19,20 @@ Encapsulates both animation and rendering
 class AnimationComponent : public Observer<PlayerState>
 {
 public:
-    AnimationComponent()
-        : Observer<PlayerState>([this](const PlayerState &state)
-                                { this->on_player_state_change(state); }) {};
+    AnimationComponent(T3DModel *model, PlayerState *playerState, color_t primColor);
     ~AnimationComponent();
 
-    void init(T3DModel *model, PlayerState *playerState, color_t primColor);
+    // No copy, only move
+    AnimationComponent(const AnimationComponent &) = delete;
+    AnimationComponent &operator=(const AnimationComponent &) = delete;
+    AnimationComponent(AnimationComponent &&) = default;
+    AnimationComponent &operator=(AnimationComponent &&) = default;
+
+    uint32_t get_vert_count() const { return mModel->totalVertCount; }
     void update(float deltaTime);
     void play_animation(Anim anim);
     void update_animation(float deltaTime);
-    uint32_t draw(const Vector3 &position, const Vector2 &rotation) const;
+    void draw(const Vector3 &position, const Vector2 &rotation) const;
 
     void on_player_state_change(const PlayerState &state);
 
@@ -47,5 +51,8 @@ private:
 
     color_t mPrimColor{};
 };
+
+void update(AnimationComponent &comp, float deltaTime);
+void draw(const AnimationComponent &comp, const Vector3 &position, const Vector2 &rotation);
 
 #endif

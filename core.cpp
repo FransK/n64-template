@@ -6,7 +6,7 @@ namespace Core
     bool global_core_playeriswinner[MAX_PLAYERS] = {false, false, false, false};
     AiDiff global_core_aidifficulty = AI_DIFFICULTY;
     uint32_t global_core_playercount = 1;
-    Player global_core_players[JOYPAD_PORT_COUNT] = {};
+    PlayerJoypad global_core_players[JOYPAD_PORT_COUNT] = {};
     bool global_game_ending = false;
 } // namespace Core
 

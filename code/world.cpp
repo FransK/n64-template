@@ -1,7 +1,5 @@
 #include "world.h"
 
-using namespace Fishing;
-
 World::World()
 {
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);

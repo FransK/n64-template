@@ -64,7 +64,7 @@ namespace Core
     void core_reset_winners();
 
     // Player info
-    extern Player global_core_players[JOYPAD_PORT_COUNT];
+    extern PlayerJoypad global_core_players[JOYPAD_PORT_COUNT];
     extern uint32_t global_core_playercount;
     extern AiDiff global_core_aidifficulty;
 

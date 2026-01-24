@@ -9,8 +9,6 @@
 #include "input/PlayerInputComponent.h"
 #include "math/vector2.h"
 
-using namespace Fishing;
-
 bool showFPS = false;
 bool debugOverlay = false;
 
@@ -62,6 +60,8 @@ Scene::Scene()
         {-1, 0},
         {0, 1}};
 
+    mAnimationComponents.reserve(MAX_PLAYERS);
+
     for (size_t i = 0; i < MAX_PLAYERS; i++)
     {
         mPlayerData[i].setPosition(initialPositions[i]);
@@ -76,8 +76,9 @@ Scene::Scene()
         {
             mInputComponents[i] = std::make_unique<InputComponent>();
         }
-        mAnimationComponents[i].init(mPlayerModel, &mPlayerStates[i], COLORS[i]);
-        mPlayerStates[i].attach(&mAnimationComponents[i]); // Hook up observer
+
+        mAnimationComponents.emplace_back(mPlayerModel, &mPlayerStates[i], COLORS[i]);
+        mPlayerStates[i].attach(&mAnimationComponents.back());
         mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
         mAIPlayers[i].init(&mPlayerData[i]);
 
@@ -263,7 +264,7 @@ void Scene::update(float deltaTime)
     // === Draw players (3D Pass) === //
     for (size_t i = 0; i < MAX_PLAYERS; i++)
     {
-        vertices += mAnimationComponents[i].draw(mPlayerData[i].getPosition(), mPlayerData[i].getRotation());
+        mAnimationComponents[i].draw(mPlayerData[i].getPosition(), mPlayerData[i].getRotation());
     }
 
     // === Draw billboards (2D Pass) === //

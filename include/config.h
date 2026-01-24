@@ -1,4 +1,3 @@
-
 #ifndef N64BASE_CONFIG_H
 #define N64BASE_CONFIG_H
 
@@ -30,17 +29,21 @@ namespace Core
     typedef struct
     {
         joypad_port_t port;
-    } Player;
+    } PlayerJoypad;
 
     /***************************************************************
                          Debug Core Constants
     ***************************************************************/
 
-    // Enable Debug features
-    constexpr bool DEBUG = true;
+    // Enable Debug features (driven by -DDEBUG=1 from the Makefile)
+#if defined(DEBUG) && (DEBUG + 0)
+    constexpr bool DEBUG_ENABLED = true;
+#else
+    constexpr bool DEBUG_ENABLED = false;
+#endif
 
     // Initialize USB and isViewer logging
-    constexpr bool DEBUG_LOG = DEBUG;
+    constexpr bool DEBUG_LOG = DEBUG_ENABLED;
 
     // Initialize RDP debugger. Also requires DEBUG_LOG.
     constexpr bool DEBUG_RDP = false && DEBUG_LOG;

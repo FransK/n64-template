@@ -1,13 +1,11 @@
 #ifndef PLAYER_STATE
 #define PLAYER_STATE
 
-#include <set>
-
 #include "playerConsts.h"
 #include "playerData.h"
 
-#include "Observer.h"
 #include "CollisionScene.h"
+#include "Observable.h"
 #include "vector3.h"
 
 enum PlayerStateEnum
@@ -20,11 +18,9 @@ enum PlayerStateEnum
     STATE_FISHING,
 };
 
-class PlayerState
+class PlayerState : public Observable<PlayerState>
 {
 public:
-    using PlayerStateObserver = Observer<PlayerState>;
-
     PlayerState() : mState(STATE_IDLE),
                     mStateTimer(0.0f),
                     mFishCaught(nullptr),
@@ -44,16 +40,11 @@ public:
     void setActionSuccess(bool success) { mActionSuccess = success; }
     void update(float deltaTime, PlayerData &playerData, Collision::CollisionScene &collScene, Collision::Collider *damageTrigger, bool stunned);
 
-    bool attach(PlayerStateObserver *observer);
-    bool detach(PlayerStateObserver *observer);
-    void notify();
-
 private:
     PlayerStateEnum mState{};
     float mStateTimer{};
     int *mFishCaught{};
     bool mActionSuccess{};
-    std::set<PlayerStateObserver *> mObservers{};
 };
 
 #endif

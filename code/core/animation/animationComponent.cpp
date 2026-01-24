@@ -1,7 +1,9 @@
 #include "animation/animationComponent.h"
 #include "math/quaternion.h"
 
-void AnimationComponent::init(T3DModel *model, PlayerState *playerState, color_t primColor)
+AnimationComponent::AnimationComponent(T3DModel *model, PlayerState *playerState, color_t primColor)
+    : Observer<PlayerState>([this](const PlayerState &state)
+                            { this->on_player_state_change(state); })
 {
     mModel = model;
     mPrimColor = primColor;
@@ -100,7 +102,7 @@ void AnimationComponent::update_animation(float deltaTime)
     t3d_skeleton_update(&mSkeleton);
 }
 
-uint32_t AnimationComponent::draw(const Vector3 &position, const Vector2 &rotation) const
+void AnimationComponent::draw(const Vector3 &position, const Vector2 &rotation) const
 {
     // Rotate the complex by 90 degrees to align with T3D's coordinate system
     Math::Vector2 adjustedRotation = {-rotation.y, rotation.x};
@@ -117,7 +119,6 @@ uint32_t AnimationComponent::draw(const Vector3 &position, const Vector2 &rotati
                         pos);
 
     rspq_block_run(mDplPlayer);
-    return mModel->totalVertCount;
 }
 
 void AnimationComponent::on_player_state_change(const PlayerState &state)
@@ -143,4 +144,14 @@ void AnimationComponent::on_player_state_change(const PlayerState &state)
         play_animation(Anim::IDLE);
         break;
     }
+}
+
+void update(AnimationComponent &component, float deltaTime)
+{
+    component.update(deltaTime);
+}
+
+void draw(AnimationComponent const &component, const Vector3 &position, const Vector2 &rotation)
+{
+    component.draw(position, rotation);
 }

@@ -43,10 +43,10 @@ ASSETS_LIST += $(subst $(ASSETS_DIR),$(FILESYSTEM_DIR),$(SOUND2_LIST:%.mp3=%.wav
 ASSETS_LIST += $(subst $(ASSETS_DIR),$(FILESYSTEM_DIR),$(MUSIC_LIST:%.xm=%.xm64))
 ASSETS_LIST += $(subst $(ASSETS_DIR),$(FILESYSTEM_DIR),$(DESC_LIST:%.txt=%.desc))
 
-ifeq ($(DEBUG), 1)
-	N64_CFLAGS += -g -DDEBUG=$(DEBUG)
-	N64_CXXFLAGS += -g -DDEBUG=$(DEBUG)
-	N64_LDFLAGS += -g
+ifeq ($(strip $(DEBUG)), 1)
+	N64_CFLAGS := $(filter-out -O%,$(N64_CFLAGS)) -g3 -Og -DDEBUG=$(strip $(DEBUG))
+    N64_CXXFLAGS := $(filter-out -O%,$(N64_CXXFLAGS)) -g3 -Og -DDEBUG=$(strip $(DEBUG))
+    N64_LDFLAGS += -g
 endif
 
 # Debug: Print compiler info
@@ -58,6 +58,8 @@ $(info CFLAGS = $(CFLAGS))
 $(info CXXFLAGS = $(CXXFLAGS))
 $(info N64_CXXFLAGS = $(N64_CXXFLAGS))
 $(info N64_LDFLAGS = $(N64_LDFLAGS))
+$(info DEBUG_RAW='$(DEBUG)')
+$(info DEBUG_STRIPPED='$(strip $(DEBUG))')
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)

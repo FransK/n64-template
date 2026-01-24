@@ -103,22 +103,3 @@ void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Col
         changeState(STATE_IDLE, playerData, collScene, damageTrigger);
     }
 }
-
-bool PlayerState::attach(PlayerStateObserver *observer)
-{
-    auto [pos, success] = mObservers.insert(observer);
-    return success;
-}
-
-bool PlayerState::detach(PlayerStateObserver *observer)
-{
-    return mObservers.erase(observer) > 0U;
-}
-
-void PlayerState::notify()
-{
-    for (auto *observer : mObservers)
-    {
-        observer->update(*this);
-    }
-}
