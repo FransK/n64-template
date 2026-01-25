@@ -89,22 +89,22 @@ void AnimationComponent::on_player_state_change(const PlayerState &state)
 {
     switch (state.getState())
     {
-    case STATE_IDLE:
+    case PlayerStateEnum::STATE_IDLE:
         play_animation(Anim::IDLE);
         break;
-    case STATE_WALKING:
+    case PlayerStateEnum::STATE_WALKING:
         play_animation(Anim::RUN);
         break;
-    case STATE_ATTACKING:
+    case PlayerStateEnum::STATE_ATTACKING:
         play_animation(Anim::SHOVE);
         break;
-    case STATE_STUNNED:
+    case PlayerStateEnum::STATE_STUNNED:
         play_animation(Anim::RECEIVE_SHOVE);
         break;
-    case STATE_CASTING:
+    case PlayerStateEnum::STATE_CASTING:
         play_animation(Anim::CAST);
         break;
-    case STATE_FISHING:
+    case PlayerStateEnum::STATE_FISHING:
         play_animation(Anim::IDLE);
         break;
     }

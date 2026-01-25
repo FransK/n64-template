@@ -198,7 +198,7 @@ void Scene::update(float deltaTime)
 {
     // === Debug Controls === //
     {
-        auto ctrl = core_get_playercontroller(PLAYER_1);
+        auto ctrl = core_get_playercontroller(PlyNum::PLAYER_1);
         auto btn = joypad_get_buttons_pressed(ctrl);
         auto held = joypad_get_buttons_held(ctrl);
 

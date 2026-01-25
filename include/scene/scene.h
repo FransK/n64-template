@@ -54,7 +54,7 @@ public:
     void reset();
 
 private:
-    enum class State : uint8_t
+    enum struct State : uint8_t
     {
         INTRO = 0,
         GAME,

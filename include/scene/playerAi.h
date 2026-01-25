@@ -7,7 +7,7 @@
 #include "input/playerState.h"
 #include "player.h"
 
-enum AIBehavior : uint8_t
+enum struct AIBehavior : uint8_t
 {
     BEHAVE_FISHERMAN,
     BEHAVE_BULLY,
@@ -20,7 +20,7 @@ public:
     PlayerAi() = default;
     void init(PlayerData *player)
     {
-        mBehavior = BEHAVE_FISHERMAN;
+        mBehavior = AIBehavior::BEHAVE_FISHERMAN;
         mPlayer = player;
     }
 

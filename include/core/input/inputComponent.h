@@ -28,12 +28,12 @@ public:
 
         switch (playerState.getState())
         {
-        case STATE_STUNNED:
-        case STATE_CASTING:
-        case STATE_ATTACKING:
+        case PlayerStateEnum::STATE_STUNNED:
+        case PlayerStateEnum::STATE_CASTING:
+        case PlayerStateEnum::STATE_ATTACKING:
             // Ignore inputs
             break;
-        case STATE_FISHING:
+        case PlayerStateEnum::STATE_FISHING:
             // Allow only fishing inputs
             if (inputState.fish)
             {
@@ -43,23 +43,23 @@ public:
                     // Successful catch
                     playerState.setActionSuccess(true);
                 }
-                playerState.changeState(STATE_IDLE, playerData, collScene, damageTrigger);
+                playerState.changeState(PlayerStateEnum::STATE_IDLE, playerData, collScene, damageTrigger);
             }
             break;
-        case STATE_WALKING:
-        case STATE_IDLE:
+        case PlayerStateEnum::STATE_WALKING:
+        case PlayerStateEnum::STATE_IDLE:
             // Process all inputs
             if (inputState.attack)
             {
                 // Start attack
-                playerState.changeState(STATE_ATTACKING, playerData, collScene, damageTrigger);
+                playerState.changeState(PlayerStateEnum::STATE_ATTACKING, playerData, collScene, damageTrigger);
                 break;
             }
 
             if (inputState.fish)
             {
                 // Start fishing
-                playerState.changeState(STATE_CASTING, playerData, collScene, damageTrigger);
+                playerState.changeState(PlayerStateEnum::STATE_CASTING, playerData, collScene, damageTrigger);
                 break;
             }
 
@@ -69,13 +69,13 @@ public:
                 Vector2 normMove{};
                 Vector2::norm(&inputState.move, &normMove);
                 // Start walking
-                playerState.changeState(STATE_WALKING, playerData, collScene, damageTrigger);
+                playerState.changeState(PlayerStateEnum::STATE_WALKING, playerData, collScene, damageTrigger);
                 playerData.setRotation({normMove.x, normMove.y});
                 playerData.setVelocity({normMove.x * BASE_SPEED, 0.0f, -normMove.y * BASE_SPEED});
                 break;
             }
 
-            playerState.changeState(STATE_IDLE, playerData, collScene, damageTrigger);
+            playerState.changeState(PlayerStateEnum::STATE_IDLE, playerData, collScene, damageTrigger);
             break;
         default:
             break;

@@ -28,8 +28,8 @@ void Player::init(Collision::CollisionScene *scene, PlayerData *data, PlayerStat
         .scale = 1.0f,
         .hasGravity = true,
         .isFixed = false,
-        .collisionLayers = Collision::CollisionLayerTangible,
-        .collisionGroup = uint16_t(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
+        .collisionLayers = static_cast<uint16_t>(Collision::CollisionLayers::CollisionLayerTangible),
+        .collisionGroup = static_cast<uint16_t>(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
     };
 
     mCollider.center.y = PlayerColliderType.data.cylinder.halfHeight;
@@ -44,8 +44,8 @@ void Player::init(Collision::CollisionScene *scene, PlayerData *data, PlayerStat
         .scale = 1.0f,
         .hasGravity = false,
         .isTrigger = true,
-        .collisionLayers = Collision::CollisionLayerTangible,
-        .collisionGroup = uint16_t(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
+        .collisionLayers = static_cast<uint16_t>(Collision::CollisionLayers::CollisionLayerTangible),
+        .collisionGroup = static_cast<uint16_t>(FIRST_PLAYER_COLLIDER_GROUP + playerNumber),
     };
 
     mDamageTrigger.center.y = DamageTriggerType.data.sphere.radius;
@@ -62,7 +62,7 @@ Player::~Player()
 
 void Player::draw_billboard(T3DViewport &viewport) const
 {
-    if (mPlayerState->getState() != STATE_FISHING)
+    if (mPlayerState->getState() != PlayerStateEnum::STATE_FISHING)
     {
         return;
     }

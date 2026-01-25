@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-enum Anim : uint8_t
+enum struct Anim : uint8_t
 {
     IDLE = 0,
     RUN,

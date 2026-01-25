@@ -22,15 +22,15 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
 
     switch (state)
     {
-    case STATE_IDLE:
+    case PlayerStateEnum::STATE_IDLE:
         // Find something to do
         update_idle(deltaTime, playerNumber, players, winners);
-    case STATE_WALKING:
+    case PlayerStateEnum::STATE_WALKING:
         // Move towards target and perform actions
         update_movement_target();
         move_to_target();
         break;
-    case STATE_FISHING:
+    case PlayerStateEnum::STATE_FISHING:
         // Check fishing status
         if (playerState.getStateTimer() < CATCH_TIMER - mDelayCatchTimer)
         {
@@ -39,11 +39,11 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
             mDelayCatchTimer = 0.6f;
         }
         break;
-    case STATE_ATTACKING:
+    case PlayerStateEnum::STATE_ATTACKING:
         mDelayActionTimer = 5.0f;
         break;
-    case STATE_CASTING:
-    case STATE_STUNNED:
+    case PlayerStateEnum::STATE_CASTING:
+    case PlayerStateEnum::STATE_STUNNED:
     default:
         // Do nothing, wait for action to complete
         break;
@@ -54,7 +54,7 @@ void PlayerAi::update_idle(float deltaTime, int playerNumber, PlayerData *player
 {
     switch (mBehavior)
     {
-    case BEHAVE_BALANCED:
+    case AIBehavior::BEHAVE_BALANCED:
         // Alternate between fish and players
         if (mTarget)
         {
@@ -70,14 +70,14 @@ void PlayerAi::update_idle(float deltaTime, int playerNumber, PlayerData *player
             }
         }
         break;
-    case BEHAVE_BULLY:
+    case AIBehavior::BEHAVE_BULLY:
         mTarget = find_winner_target(playerNumber, players, winners);
         if (!mTarget)
         {
             mMovementTarget = find_closest_fish();
         }
         break;
-    case BEHAVE_FISHERMAN:
+    case AIBehavior::BEHAVE_FISHERMAN:
         mMovementTarget = find_closest_fish();
         break;
     }

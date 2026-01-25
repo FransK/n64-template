@@ -9,21 +9,21 @@ namespace Core
 #define FS_BASE_PATH "rom:/"
 
     // Player number definition
-    typedef enum
+    enum struct PlyNum
     {
         PLAYER_1 = 0,
         PLAYER_2 = 1,
         PLAYER_3 = 2,
         PLAYER_4 = 3,
-    } PlyNum;
+    };
 
     // AI difficulty definition
-    typedef enum
+    enum struct AiDiff
     {
         DIFF_EASY = 0,
         DIFF_MEDIUM = 1,
         DIFF_HARD = 2,
-    } AiDiff;
+    };
 
     // Player ports
     typedef struct
@@ -58,7 +58,7 @@ namespace Core
     constexpr bool SKIP_DIFFICULTY_SELECTION = true;
 
     // The difficulty of the AI.
-    constexpr AiDiff AI_DIFFICULTY = DIFF_EASY;
+    constexpr AiDiff AI_DIFFICULTY = AiDiff::DIFF_EASY;
 
     /***************************************************************
                          Public Core Constants

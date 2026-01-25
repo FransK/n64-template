@@ -17,7 +17,7 @@ uint32_t Core::core_get_playercount()
 
 joypad_port_t Core::core_get_playercontroller(PlyNum ply)
 {
-    return global_core_players[ply].port;
+    return global_core_players[static_cast<int>(ply)].port;
 }
 
 Core::AiDiff Core::core_get_aidifficulty()
@@ -32,7 +32,7 @@ double Core::core_get_subtick()
 
 void Core::core_set_winner(PlyNum ply)
 {
-    global_core_playeriswinner[ply] = true;
+    global_core_playeriswinner[static_cast<int>(ply)] = true;
 }
 
 void Core::core_game_end()

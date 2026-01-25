@@ -8,7 +8,7 @@
 #include "Observable.h"
 #include "vector3.h"
 
-enum PlayerStateEnum
+enum struct PlayerStateEnum
 {
     STATE_IDLE,
     STATE_WALKING,
@@ -21,7 +21,7 @@ enum PlayerStateEnum
 class PlayerState : public Observable<PlayerState>
 {
 public:
-    bool canCatch() const { return mState == STATE_FISHING && mStateTimer < CATCH_TIMER; }
+    bool canCatch() const { return mState == PlayerStateEnum::STATE_FISHING && mStateTimer < CATCH_TIMER; }
     PlayerStateEnum getState() const { return mState; }
     int getFishCaught() const { return mFishCaught; }
     float getStateTimer() const { return mStateTimer; }
@@ -32,7 +32,7 @@ public:
     void update(float deltaTime, PlayerData &playerData, Collision::CollisionScene &collScene, Collision::Collider *damageTrigger, bool stunned);
 
 private:
-    PlayerStateEnum mState{STATE_IDLE};
+    PlayerStateEnum mState{PlayerStateEnum::STATE_IDLE};
     float mStateTimer{};
     int mFishCaught{};
     bool mActionSuccess{false};

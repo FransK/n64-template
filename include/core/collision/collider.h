@@ -17,7 +17,7 @@ namespace Collision
     constexpr float PLAYING_R = 60.f;
     constexpr float PLAYING_R2 = PLAYING_R * PLAYING_R;
 
-    enum CollisionLayers
+    enum struct CollisionLayers
     {
         CollisionLayerTangible = (1 << 0),
     };

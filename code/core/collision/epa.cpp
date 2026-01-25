@@ -116,7 +116,7 @@ void ExpandingSimplex::addTriangle(const SimplexTriangleIndexData *data)
     triangleInit(&triangles[result], data);
     ++triangleCount;
 
-    if (flags & SimplexFlagsSkipDistance)
+    if (flags & static_cast<uint16_t>(SimplexFlags::SimplexFlagsSkipDistance))
     {
         return;
     }
@@ -250,14 +250,14 @@ void ExpandingSimplex::rotateEdge(SimplexTriangle *triangleA, int triangleAIndex
     adjTriangle->indexData.oppositePoints[adjIndex] = relativeIndex0;
 
     triangleInitNormal(triangleA);
-    if (!(flags & SimplexFlagsSkipDistance))
+    if (!(flags & static_cast<uint16_t>(SimplexFlags::SimplexFlagsSkipDistance)))
     {
         triangleDetermineDistance(triangleA);
         fixHeap(heapIndex);
     }
 
     triangleInitNormal(triangleB);
-    if (!(flags & SimplexFlagsSkipDistance))
+    if (!(flags & static_cast<uint16_t>(SimplexFlags::SimplexFlagsSkipDistance)))
     {
         triangleDetermineDistance(triangleB);
         fixHeap(findHeapIndex(triangleBIndex));
@@ -354,7 +354,7 @@ void ExpandingSimplex::triangleCheckRotate(int triangleIndex, int heapIndex)
     {
         rotateEdge(triangle, triangleIndex, heapIndex);
     }
-    else if (!(flags & SimplexFlagsSkipDistance))
+    else if (!(flags & static_cast<uint16_t>(SimplexFlags::SimplexFlagsSkipDistance)))
     {
         triangleDetermineDistance(triangle);
         fixHeap(heapIndex);

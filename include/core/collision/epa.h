@@ -55,7 +55,7 @@ namespace Collision
         Vector3 normal{};
     };
 
-    enum SimplexFlags
+    enum struct SimplexFlags
     {
         SimplexFlagsSkipDistance = (1 << 0),
     };

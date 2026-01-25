@@ -11,12 +11,12 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
         return;
     }
 
-    if (mState == STATE_ATTACKING)
+    if (mState == PlayerStateEnum::STATE_ATTACKING)
     {
         collScene.deactivate(damageTrigger);
     }
 
-    if (mState == STATE_FISHING && mActionSuccess)
+    if (mState == PlayerStateEnum::STATE_FISHING && mActionSuccess)
     {
         mFishCaught += 1;
         mActionSuccess = false;
@@ -26,7 +26,7 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
 
     switch (mState)
     {
-    case STATE_ATTACKING:
+    case PlayerStateEnum::STATE_ATTACKING:
         mStateTimer = SHOVE_TIME;
         playerData.setVelocity({0.0f, 0.0f, 0.0f});
         playerData.getAttackActor()->setPosition({playerData.getPosition().x + playerData.getRotation().x * ATTACK_OFFSET,
@@ -35,28 +35,28 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
         collScene.activate(damageTrigger);
         notify();
         break;
-    case STATE_CASTING:
+    case PlayerStateEnum::STATE_CASTING:
         mStateTimer = CAST_TIME;
         playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
-    case STATE_FISHING:
+    case PlayerStateEnum::STATE_FISHING:
         // mStateTimer = Fish::get_new_timer();
         mStateTimer = 4.0f; // Temporary fixed timer
         playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
-    case STATE_STUNNED:
+    case PlayerStateEnum::STATE_STUNNED:
         mStateTimer = RECEIVE_SHOVE_TIME;
         playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
-    case STATE_IDLE:
+    case PlayerStateEnum::STATE_IDLE:
         mStateTimer = 0.0f;
         playerData.setVelocity({0.0f, 0.0f, 0.0f});
         notify();
         break;
-    case STATE_WALKING:
+    case PlayerStateEnum::STATE_WALKING:
         mStateTimer = 0.0f;
         notify();
         break;
@@ -65,7 +65,7 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
 
 void PlayerState::reset()
 {
-    mState = STATE_IDLE;
+    mState = PlayerStateEnum::STATE_IDLE;
     mStateTimer = 0.0f;
     mActionSuccess = false;
     mFishCaught = 0;
@@ -73,14 +73,14 @@ void PlayerState::reset()
 
 void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::CollisionScene &collScene, Collision::Collider *damageTrigger, bool stunned)
 {
-    if (mState != STATE_STUNNED && stunned)
+    if (mState != PlayerStateEnum::STATE_STUNNED && stunned)
     {
         // Check if got stunned
-        changeState(STATE_STUNNED, playerData, collScene, damageTrigger);
+        changeState(PlayerStateEnum::STATE_STUNNED, playerData, collScene, damageTrigger);
         return;
     }
 
-    if (mState == STATE_IDLE || mState == STATE_WALKING)
+    if (mState == PlayerStateEnum::STATE_IDLE || mState == PlayerStateEnum::STATE_WALKING)
     {
         return;
     }
@@ -88,14 +88,14 @@ void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::Col
     mStateTimer -= deltaTime;
     if (mStateTimer <= 0.0f)
     {
-        if (mState == STATE_CASTING)
+        if (mState == PlayerStateEnum::STATE_CASTING)
         {
             // After casting, start fishing
-            changeState(STATE_FISHING, playerData, collScene, damageTrigger);
+            changeState(PlayerStateEnum::STATE_FISHING, playerData, collScene, damageTrigger);
             return;
         }
 
         // After other timed states, go back to idle
-        changeState(STATE_IDLE, playerData, collScene, damageTrigger);
+        changeState(PlayerStateEnum::STATE_IDLE, playerData, collScene, damageTrigger);
     }
 }
