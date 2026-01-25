@@ -2,6 +2,7 @@
 
 #include "math/vector2.h"
 #include "math/vector3.h"
+#include "input/inputState.h"
 #include "input/playerData.h"
 #include "input/playerState.h"
 #include "player.h"
@@ -24,7 +25,8 @@ public:
     }
 
     void set_behavior(AIBehavior behavior) { mBehavior = behavior; }
-    void update(float deltaTime, const PlayerState &state, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out);
+    void update(float deltaTime, const PlayerState &state, int playerNumber, PlayerData *players, uint8_t *winners);
+    InputState get_input_state() const { return mInputState; }
 
 private:
     AIBehavior mBehavior;
@@ -33,10 +35,11 @@ private:
     const PlayerData *mTarget{};
     float mDelayActionTimer{0.0f};
     float mDelayCatchTimer{0.8f};
+    InputState mInputState{};
 
-    void update_idle(float deltaTime, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out);
+    void update_idle(float deltaTime, int playerNumber, PlayerData *players, uint8_t *winners);
     void update_movement_target();
-    void move_to_target(InputState &out);
+    void move_to_target();
     PlayerData *find_winner_target(int playerNumber, PlayerData *players, uint8_t *winners) const;
     Vector3 find_closest_fish() const;
 };

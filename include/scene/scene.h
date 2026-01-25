@@ -10,6 +10,7 @@
 #include "collision/CollisionScene.h"
 #include "debug/overlay.h"
 #include "input/inputComponent.h"
+#include "input/InputComponentVariant.h"
 #include "input/playerData.h"
 #include "input/playerState.h"
 
@@ -64,18 +65,17 @@ private:
     /* Player Data Block - Positions, Velocities, etc*/
     std::array<PlayerData, MAX_PLAYERS> mPlayerData{};
     std::array<PlayerState, MAX_PLAYERS> mPlayerStates{};
-    PlayerAi mAIPlayers[MAX_PLAYERS];
-    std::unique_ptr<InputComponent> mInputComponents[MAX_PLAYERS];
+    std::array<PlayerAi, MAX_PLAYERS> mAIPlayers{};
+    std::vector<InputComponentVariant> mInputComponents;
     CollisionScene mCollisionScene;
-    // ComponentVector mAnimationComponents{};
     std::vector<AnimationComponent> mAnimationComponents;
-    int mFishCaught[MAX_PLAYERS]{0};
-    int mStunnedIds[MAX_PLAYERS]{-1};
+    std::array<int, MAX_PLAYERS> mFishCaught{0};
+    std::array<int, MAX_PLAYERS> mStunnedIds{-1};
 
     /* Container class? */
     Player mPlayers[MAX_PLAYERS];
 
-    uint8_t mWinners[MAX_PLAYERS]{0};
+    std::array<uint8_t, MAX_PLAYERS> mWinners{0};
     int mCurrTopScore{0};
 
     T3DModel *mPlayerModel{};

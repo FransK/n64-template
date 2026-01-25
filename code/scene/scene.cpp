@@ -1,12 +1,15 @@
 #include <algorithm>
 #include <string>
+#include <variant>
 #include "timer.h"
 
 #include "scene.h"
 #include "config.h"
 #include "debug/debugDraw.h"
 #include "debug/overlay.h"
-#include "input/PlayerInputComponent.h"
+#include "input/AIInputStrategy.h"
+#include "input/PlayerInputStrategy.h"
+#include "input/InputComponentUpdate.h"
 #include "math/vector2.h"
 
 bool showFPS = false;
@@ -60,6 +63,7 @@ Scene::Scene()
         {-1, 0},
         {0, 1}};
 
+    mInputComponents.reserve(MAX_PLAYERS);
     mAnimationComponents.reserve(MAX_PLAYERS);
 
     for (size_t i = 0; i < MAX_PLAYERS; i++)
@@ -67,23 +71,23 @@ Scene::Scene()
         mPlayerData[i].setPosition(initialPositions[i]);
         mPlayerData[i].setRotation(initialRotations[i]);
         mPlayerStates[i].init(&mFishCaught[i]);
-
-        if (i < core_get_playercount())
-        {
-            mInputComponents[i] = std::make_unique<PlayerInputComponent>((joypad_port_t)i);
-        }
-        else
-        {
-            mInputComponents[i] = std::make_unique<InputComponent>();
-        }
-
-        mAnimationComponents.emplace_back(mPlayerModel, &mPlayerStates[i], COLORS[i]);
-        mPlayerStates[i].attach(&mAnimationComponents.back());
         mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
         mAIPlayers[i].init(&mPlayerData[i]);
 
+        if (i < core_get_playercount())
+        {
+            mInputComponents.emplace_back(PlayerInputStrategy((joypad_port_t)i));
+        }
+        else
+        {
+            mInputComponents.emplace_back(AIInputStrategy(&mAIPlayers[i]));
+        }
+
         AIBehavior behavior = (i == MAX_PLAYERS - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
         mAIPlayers[i].set_behavior(behavior);
+
+        mAnimationComponents.emplace_back(mPlayerModel, &mPlayerStates[i], COLORS[i]);
+        mPlayerStates[i].attach(&mAnimationComponents.back());
     }
 
     // === Initialize Game State === //
@@ -155,42 +159,27 @@ void Scene::update_fixed(float deltaTime)
         }
         mStunnedIds[i] = -1;
     }
-    for (size_t i = 0; i < core_get_playercount(); i++)
-    {
-        InputState inputState{};
-        mInputComponents[i]->update(deltaTime,
-                                    inputState,
-                                    mPlayerStates[i],
-                                    mPlayerData[i],
-                                    mCollisionScene,
-                                    mPlayers[i].get_damage_trigger(),
-                                    stunnedThisFrame[i]);
-    }
+
     for (size_t i = core_get_playercount(); i < MAX_PLAYERS; i++)
     {
-        // Update AI to get inputs
-        InputState aiInput{};
-        mAIPlayers[i].update(deltaTime,
-                             mPlayerStates[i],
-                             i,
-                             &mPlayerData[0],
-                             &mWinners[0],
-                             aiInput);
+        mAIPlayers[i].update(deltaTime, mPlayerStates[i], i, mPlayerData.data(), mWinners.data());
+    }
 
-        // Feed AI inputs to input component
-        mInputComponents[i]->update(deltaTime,
-                                    aiInput,
-                                    mPlayerStates[i],
-                                    mPlayerData[i],
-                                    mCollisionScene,
-                                    mPlayers[i].get_damage_trigger(),
-                                    stunnedThisFrame[i]);
+    for (size_t i = 0; i < MAX_PLAYERS; i++)
+    {
+        std::visit(InputComponentUpdate{deltaTime,
+                                        mPlayerStates[i],
+                                        mPlayerData[i],
+                                        mCollisionScene,
+                                        mPlayers[i].get_damage_trigger(),
+                                        stunnedThisFrame[i]},
+                   mInputComponents[i]);
     }
     ticksCollisionUpdate = get_ticks();
     ticksActorUpdate = ticksCollisionUpdate - ticksActorUpdate;
 
     // === Update Collision Scene === //
-    mCollisionScene.update(deltaTime, mStunnedIds);
+    mCollisionScene.update(deltaTime, mStunnedIds.data());
     ticksCollisionUpdate = get_ticks() - ticksCollisionUpdate;
 
     // === Keep Track of Leaders === //

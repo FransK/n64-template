@@ -65,7 +65,7 @@ void CollisionScene::deactivate(Collider *object)
     }
 }
 
-void CollisionScene::update(float fixedTimeStep, int (&stunnedIds)[4])
+void CollisionScene::update(float fixedTimeStep, int *stunnedIds)
 {
     /* Integrate objects */
     for (auto *c : activeColliders)
@@ -93,7 +93,7 @@ void CollisionScene::debugDraw()
     }
 }
 
-void CollisionScene::runCollision(int (&stunnedIds)[4])
+void CollisionScene::runCollision(int *stunnedIds)
 {
     // === Sweep and Prune === //
     int edgeCount = activeColliders.size() * 2;
@@ -167,7 +167,7 @@ void CollisionScene::runCollision(int (&stunnedIds)[4])
     }
 }
 
-void CollisionScene::collide(Collider *a, Collider *b, int (&stunnedIds)[4])
+void CollisionScene::collide(Collider *a, Collider *b, int *stunnedIds)
 {
     if (!(a->collisionLayers & b->collisionLayers))
     {

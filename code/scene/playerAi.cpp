@@ -3,8 +3,15 @@
 #include "../../core.h"
 #include "collider.h"
 
-void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out)
+void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playerNumber, PlayerData *players, uint8_t *winners)
 {
+    // Reset input state
+    mInputState = {
+        .move = {0.0f, 0.0f},
+        .fish = false,
+        .attack = false,
+    };
+
     if (mDelayActionTimer > 0.0f)
     {
         mDelayActionTimer -= deltaTime;
@@ -17,17 +24,17 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
     {
     case STATE_IDLE:
         // Find something to do
-        update_idle(deltaTime, playerNumber, players, winners, out);
+        update_idle(deltaTime, playerNumber, players, winners);
     case STATE_WALKING:
         // Move towards target and perform actions
         update_movement_target();
-        move_to_target(out);
+        move_to_target();
         break;
     case STATE_FISHING:
         // Check fishing status
         if (playerState.getStateTimer() < CATCH_TIMER - mDelayCatchTimer)
         {
-            out.fish = true;
+            mInputState.fish = true;
             mDelayActionTimer = 2.0f;
             mDelayCatchTimer = 0.6f;
         }
@@ -43,7 +50,7 @@ void PlayerAi::update(float deltaTime, const PlayerState &playerState, int playe
     }
 }
 
-void PlayerAi::update_idle(float deltaTime, int playerNumber, PlayerData *players, uint8_t *winners, InputState &out)
+void PlayerAi::update_idle(float deltaTime, int playerNumber, PlayerData *players, uint8_t *winners)
 {
     switch (mBehavior)
     {
@@ -84,7 +91,7 @@ void PlayerAi::update_movement_target()
     }
 }
 
-void PlayerAi::move_to_target(InputState &out)
+void PlayerAi::move_to_target()
 {
     Vector3 position = mPlayer->getPosition();
     Vector3 distance;
@@ -93,16 +100,16 @@ void PlayerAi::move_to_target(InputState &out)
     float distanceThreshold = mTarget ? HITBOX_RADIUS * HITBOX_RADIUS : 1.f;
     if (Vector3::magSqrd(&distance) < distanceThreshold)
     {
-        out.move = {0.0f, 0.0f};
-        out.fish = mTarget == nullptr;
-        out.attack = mTarget != nullptr;
+        mInputState.move = {0.0f, 0.0f};
+        mInputState.fish = mTarget == nullptr;
+        mInputState.attack = mTarget != nullptr;
         return;
     }
 
     Vector3 direction;
     Vector3::normAndScale(&distance, BASE_SPEED, &direction);
 
-    out = {
+    mInputState = {
         .move = {direction.x, -direction.z},
         .fish = false,
         .attack = false,
