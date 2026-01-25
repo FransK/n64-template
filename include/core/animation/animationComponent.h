@@ -22,7 +22,6 @@ public:
     AnimationComponent(T3DModel *model, PlayerState *playerState, color_t primColor);
     ~AnimationComponent();
 
-    // No copy, only move
     AnimationComponent(const AnimationComponent &) = delete;
     AnimationComponent &operator=(const AnimationComponent &) = delete;
     AnimationComponent(AnimationComponent &&) = default;

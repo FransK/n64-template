@@ -15,11 +15,14 @@
 bool showFPS = false;
 bool debugOverlay = false;
 
-Scene::Scene()
-{
-    mPlayerModel = t3d_model_load(FS_BASE_PATH "player3.t3dm");
-    mMapModel = t3d_model_load(FS_BASE_PATH "map.t3dm");
+constexpr std::string_view FS_BASE = "rom:/";
 
+const std::string playerPath = std::string(FS_BASE) + "player3.t3dm";
+const std::string mapPath = std::string(FS_BASE) + "map.t3dm";
+
+Scene::Scene()
+    : mPlayerModel(playerPath), mMapModel(mapPath)
+{
     Debug::init();
 
     mMapMatFP = (T3DMat4FP *)malloc_uncached(sizeof(T3DMat4FP));
@@ -27,7 +30,7 @@ Scene::Scene()
 
     rspq_block_begin();
     t3d_matrix_push(mMapMatFP);
-    t3d_model_draw(mMapModel);
+    t3d_model_draw(mMapModel.getModel());
     t3d_matrix_pop(1);
     mDplMap = rspq_block_end();
 
@@ -85,7 +88,7 @@ Scene::Scene()
         AIBehavior behavior = (i == MAX_PLAYERS - 1) ? AIBehavior::BEHAVE_BULLY : AIBehavior::BEHAVE_FISHERMAN;
         mAIPlayers[i].set_behavior(behavior);
 
-        mAnimationComponents.emplace_back(mPlayerModel, &mPlayerStates[i], COLORS[i]);
+        mAnimationComponents.emplace_back(mPlayerModel.getModel(), &mPlayerStates[i], COLORS[i]);
         mPlayerStates[i].attach(&mAnimationComponents.back());
     }
 
@@ -99,9 +102,6 @@ Scene::Scene()
 Scene::~Scene()
 {
     rspq_block_free(mDplMap);
-
-    t3d_model_free(mPlayerModel);
-    t3d_model_free(mMapModel);
 
     free_uncached(mMapMatFP);
 
@@ -246,7 +246,7 @@ void Scene::update(float deltaTime)
     t3d_light_set_directional(0, COLOR_DIR, &mLightDirVec);
     t3d_light_set_count(1);
 
-    uint32_t vertices = mMapModel->totalVertCount;
+    uint32_t vertices = mMapModel.getModel()->totalVertCount;
     rspq_block_run(mDplMap);
 
     // === Draw players (3D Pass) === //

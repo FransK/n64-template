@@ -7,6 +7,7 @@
 #include "math/vector2.h"
 #include "math/vector3.h"
 #include "input/playerConsts.h"
+#include "playerColliders.h"
 
 #include "scene/entity.h"
 #include "fish.h"

@@ -6,6 +6,7 @@
 
 #include "../../core.h"
 
+#include "adapters/t3d.h"
 #include "animation/animationComponent.h"
 #include "collision/CollisionScene.h"
 #include "debug/overlay.h"
@@ -76,11 +77,11 @@ private:
     std::array<uint8_t, MAX_PLAYERS> mWinners{0};
     int mCurrTopScore{0};
 
-    T3DModel *mPlayerModel{};
+    Adapters::ModelAdapter mPlayerModel;
+    Adapters::ModelAdapter mMapModel;
 
     surface_t *mCurrentFB{};
     surface_t *mLastFB{};
-    T3DModel *mMapModel{};
     T3DMat4FP *mMapMatFP{};
     rspq_block_t *mDplMap{};
 
