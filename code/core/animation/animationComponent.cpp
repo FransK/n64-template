@@ -3,10 +3,10 @@
 
 AnimationComponent::AnimationComponent(T3DModel *model, PlayerState *playerState, color_t primColor)
     : Observer<PlayerState>([this](const PlayerState &state)
-                            { this->on_player_state_change(state); })
+                            { this->on_player_state_change(state); }),
+      mModel(model),
+      mPrimColor(primColor)
 {
-    mModel = model;
-    mPrimColor = primColor;
     // Model Credits: Quaternius (CC0) https://quaternius.com/
     mSkeleton = t3d_skeleton_create(mModel);
 
@@ -62,42 +62,6 @@ AnimationComponent::~AnimationComponent()
 
 void AnimationComponent::update(float deltaTime)
 {
-    update_animation(deltaTime);
-}
-
-void AnimationComponent::play_animation(Anim anim)
-{
-    t3d_anim_set_playing(&mAnimIdle, anim == Anim::IDLE);
-    t3d_anim_set_playing(&mAnimRun, anim == Anim::RUN);
-    t3d_anim_set_playing(&mAnimPunch, anim == Anim::SHOVE);
-    t3d_anim_set_playing(&mAnimReceiveHit, anim == Anim::RECEIVE_SHOVE);
-    t3d_anim_set_playing(&mAnimCast, anim == Anim::CAST);
-
-    switch (anim)
-    {
-    case Anim::IDLE:
-        mActiveAnim = &mAnimIdle;
-        return;
-    case Anim::RUN:
-        mActiveAnim = &mAnimRun;
-        return;
-    case Anim::SHOVE:
-        t3d_anim_set_time(&mAnimPunch, 0.0f);
-        mActiveAnim = &mAnimPunch;
-        return;
-    case Anim::RECEIVE_SHOVE:
-        t3d_anim_set_time(&mAnimReceiveHit, 0.0f);
-        mActiveAnim = &mAnimReceiveHit;
-        return;
-    case Anim::CAST:
-        t3d_anim_set_time(&mAnimCast, 0.0f);
-        mActiveAnim = &mAnimCast;
-        return;
-    }
-}
-
-void AnimationComponent::update_animation(float deltaTime)
-{
     t3d_anim_update(mActiveAnim, deltaTime);
     t3d_skeleton_update(&mSkeleton);
 }
@@ -146,12 +110,43 @@ void AnimationComponent::on_player_state_change(const PlayerState &state)
     }
 }
 
+void AnimationComponent::play_animation(Anim anim)
+{
+    t3d_anim_set_playing(&mAnimIdle, anim == Anim::IDLE);
+    t3d_anim_set_playing(&mAnimRun, anim == Anim::RUN);
+    t3d_anim_set_playing(&mAnimPunch, anim == Anim::SHOVE);
+    t3d_anim_set_playing(&mAnimReceiveHit, anim == Anim::RECEIVE_SHOVE);
+    t3d_anim_set_playing(&mAnimCast, anim == Anim::CAST);
+
+    switch (anim)
+    {
+    case Anim::IDLE:
+        mActiveAnim = &mAnimIdle;
+        return;
+    case Anim::RUN:
+        mActiveAnim = &mAnimRun;
+        return;
+    case Anim::SHOVE:
+        t3d_anim_set_time(&mAnimPunch, 0.0f);
+        mActiveAnim = &mAnimPunch;
+        return;
+    case Anim::RECEIVE_SHOVE:
+        t3d_anim_set_time(&mAnimReceiveHit, 0.0f);
+        mActiveAnim = &mAnimReceiveHit;
+        return;
+    case Anim::CAST:
+        t3d_anim_set_time(&mAnimCast, 0.0f);
+        mActiveAnim = &mAnimCast;
+        return;
+    }
+}
+
 void update(AnimationComponent &component, float deltaTime)
 {
     component.update(deltaTime);
 }
 
-void draw(AnimationComponent const &component, const Vector3 &position, const Vector2 &rotation)
+void draw(const AnimationComponent &component, const Vector3 &position, const Vector2 &rotation)
 {
     component.draw(position, rotation);
 }

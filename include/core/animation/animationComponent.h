@@ -30,11 +30,7 @@ public:
 
     uint32_t get_vert_count() const { return mModel->totalVertCount; }
     void update(float deltaTime);
-    void play_animation(Anim anim);
-    void update_animation(float deltaTime);
     void draw(const Vector3 &position, const Vector2 &rotation) const;
-
-    void on_player_state_change(const PlayerState &state);
 
 private:
     T3DModel *mModel{};
@@ -50,6 +46,9 @@ private:
     T3DSkeleton mSkeleton{};
 
     color_t mPrimColor{};
+
+    void on_player_state_change(const PlayerState &state);
+    void play_animation(Anim anim);
 };
 
 void update(AnimationComponent &comp, float deltaTime);
