@@ -70,7 +70,6 @@ Scene::Scene()
     {
         mPlayerData[i].setPosition(initialPositions[i]);
         mPlayerData[i].setRotation(initialRotations[i]);
-        mPlayerStates[i].init(&mFishCaught[i]);
         mPlayers[i].init(&mCollisionScene, &mPlayerData[i], &mPlayerStates[i], i);
         mAIPlayers[i].init(&mPlayerData[i]);
 
@@ -184,14 +183,14 @@ void Scene::update_fixed(float deltaTime)
 
     // === Keep Track of Leaders === //
     mCurrTopScore = 0;
-    for (auto &p : mFishCaught)
+    for (auto &state : mPlayerStates)
     {
-        mCurrTopScore = std::max(mCurrTopScore, p);
+        mCurrTopScore = std::max(mCurrTopScore, state.getFishCaught());
     }
 
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
-        mWinners[i] = mFishCaught[i] >= mCurrTopScore;
+        mWinners[i] = mPlayerStates[i].getFishCaught() >= mCurrTopScore;
     }
 }
 
@@ -272,9 +271,13 @@ void Scene::update(float deltaTime)
 
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
-        const rdpq_textparms_t score_params{
-            .style_id = (int16_t)i};
-        rdpq_text_printf(&score_params, FONT_TEXT, SCORE_X + i * SCORE_X_SPACING, SCORE_Y, "%d", mFishCaught[i]);
+        const rdpq_textparms_t score_params{.style_id = (int16_t)i};
+        rdpq_text_printf(&score_params,
+                         FONT_TEXT,
+                         SCORE_X + i * SCORE_X_SPACING,
+                         SCORE_Y,
+                         "%d",
+                         mPlayerStates[i].getFishCaught());
     }
 
     if (mState == State::GAME_OVER)
@@ -289,7 +292,7 @@ void Scene::update(float deltaTime)
         std::string message{};
         for (int i = 0; i < MAX_PLAYERS; i++)
         {
-            mWinners[i] = mFishCaught[i] >= mCurrTopScore;
+            mWinners[i] = mPlayerStates[i].getFishCaught() >= mCurrTopScore;
             if (mWinners[i])
             {
                 core_set_winner((PlyNum)i);
@@ -339,7 +342,6 @@ void Scene::reset()
         mPlayerData[i].setPosition(initialPositions[i]);
         mPlayerData[i].setRotation(initialRotations[i]);
         mPlayerStates[i].reset();
-        mFishCaught[i] = 0;
         mWinners[i] = 0;
         mStunnedIds[i] = -1;
     }

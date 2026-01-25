@@ -69,12 +69,10 @@ private:
     std::vector<InputComponentVariant> mInputComponents;
     CollisionScene mCollisionScene;
     std::vector<AnimationComponent> mAnimationComponents;
-    std::array<int, MAX_PLAYERS> mFishCaught{0};
     std::array<int, MAX_PLAYERS> mStunnedIds{-1};
 
     /* Container class? */
-    Player mPlayers[MAX_PLAYERS];
-
+    std::array<Player, MAX_PLAYERS> mPlayers{};
     std::array<uint8_t, MAX_PLAYERS> mWinners{0};
     int mCurrTopScore{0};
 

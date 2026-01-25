@@ -18,7 +18,7 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
 
     if (mState == STATE_FISHING && mActionSuccess)
     {
-        *mFishCaught += 1;
+        mFishCaught += 1;
         mActionSuccess = false;
     }
 
@@ -63,16 +63,12 @@ void PlayerState::changeState(const PlayerStateEnum &newState, PlayerData &playe
     }
 }
 
-void PlayerState::init(int *fishCaught)
-{
-    mFishCaught = fishCaught;
-}
-
 void PlayerState::reset()
 {
     mState = STATE_IDLE;
     mStateTimer = 0.0f;
     mActionSuccess = false;
+    mFishCaught = 0;
 }
 
 void PlayerState::update(float deltaTime, PlayerData &playerData, Collision::CollisionScene &collScene, Collision::Collider *damageTrigger, bool stunned)
