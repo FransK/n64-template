@@ -5,10 +5,10 @@ DEBUG = 1	# Enable printf debugging
 
 BUILD_DIR = build
 ASSETS_DIR = assets
-GAME_DIR = code
+GAME_DIR = src
 FILESYSTEM_DIR = filesystem
 
-SRC = main.cpp core.cpp \
+SRC = main.cpp \
 	$(wildcard $(GAME_DIR)/*.c) \
 	$(wildcard $(GAME_DIR)/**/*.c) \
 	$(wildcard $(GAME_DIR)/*.cpp) \
