@@ -13,10 +13,10 @@ namespace n64::ecs
     class Registry
     {
     public:
-        template <typename EntityIdType, typename... Components>
-        std::vector<std::tuple<EntityIdType, Components...>> components()
+        template <typename... Components>
+        std::vector<std::tuple<EntityId, Components...>> components()
         {
-            std::vector<std::tuple<EntityIdType, Components...>> result{};
+            std::vector<std::tuple<EntityId, Components...>> result{};
 
             // 1. Get set of EntityIds that have ALL requested components
             auto &firstStore = getStore<std::tuple_element_t<0, std::tuple<Components...>>>();
@@ -27,7 +27,7 @@ namespace n64::ecs
                 bool allPresent = (... && (getStore<Components>().has(entityId)));
                 if (allPresent)
                 {
-                    result.emplace_back({entityId, getStore<Components>().get(entityId)...});
+                    result.emplace_back(entityId, getStore<Components>().get(entityId)...);
                 }
             }
 

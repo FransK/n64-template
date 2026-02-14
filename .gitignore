@@ -2,3 +2,5 @@
 build/
 filesystem/*
 *.z64
+.claude/
+CLAUDE.md

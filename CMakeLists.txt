@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(Catch2)
 
 file(GLOB TEST_SOURCES test/Test*.cpp)
 
-add_executable(tests ${TEST_SOURCES})
+add_executable(tests ${TEST_SOURCES} src/Logger.cpp)
 target_include_directories(tests PRIVATE include)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
