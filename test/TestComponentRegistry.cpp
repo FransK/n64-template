@@ -2,7 +2,7 @@
 #include "ComponentRegistry.h"
 
 using n64::EntityId;
-using n64::ecs::Registry;
+using n64::ecs::ComponentRegistry;
 
 struct Position
 {
@@ -21,9 +21,9 @@ struct Health
     int hp;
 };
 
-TEST_CASE("Registry addComponent and query single component", "[Registry]")
+TEST_CASE("ComponentRegistry addComponent and query single component", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     registry.addComponent<Position>(1, {10.0f, 20.0f});
     registry.addComponent<Position>(2, {30.0f, 40.0f});
@@ -40,9 +40,9 @@ TEST_CASE("Registry addComponent and query single component", "[Registry]")
     REQUIRE(pos2.x == 30.0f);
 }
 
-TEST_CASE("Registry query multiple components", "[Registry]")
+TEST_CASE("ComponentRegistry query multiple components", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     registry.addComponent<Position>(1, {1.0f, 2.0f});
     registry.addComponent<Velocity>(1, {3.0f, 4.0f});
@@ -59,9 +59,9 @@ TEST_CASE("Registry query multiple components", "[Registry]")
     REQUIRE(vel.dx == 3.0f);
 }
 
-TEST_CASE("Registry query returns empty when no entities match", "[Registry]")
+TEST_CASE("ComponentRegistry query returns empty when no entities match", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     registry.addComponent<Position>(1, {1.0f, 2.0f});
 
@@ -69,9 +69,9 @@ TEST_CASE("Registry query returns empty when no entities match", "[Registry]")
     REQUIRE(results.empty());
 }
 
-TEST_CASE("Registry updateComponent single component", "[Registry]")
+TEST_CASE("ComponentRegistry updateComponent single component", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     registry.addComponent<Position>(1, {1.0f, 2.0f});
     registry.updateComponent(1, Position{10.0f, 20.0f});
@@ -84,9 +84,9 @@ TEST_CASE("Registry updateComponent single component", "[Registry]")
     REQUIRE(pos.y == 20.0f);
 }
 
-TEST_CASE("Registry updateComponent multiple components", "[Registry]")
+TEST_CASE("ComponentRegistry updateComponent multiple components", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     registry.addComponent<Position>(1, {1.0f, 2.0f});
     registry.addComponent<Velocity>(1, {3.0f, 4.0f});
@@ -101,9 +101,9 @@ TEST_CASE("Registry updateComponent multiple components", "[Registry]")
     REQUIRE(vel.dx == 30.0f);
 }
 
-TEST_CASE("Registry updateComponent on missing entity does not add it", "[Registry]")
+TEST_CASE("ComponentRegistry updateComponent on missing entity does not add it", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     REQUIRE_NOTHROW(registry.updateComponent(99, Position{1.0f, 1.0f}));
 
@@ -111,9 +111,9 @@ TEST_CASE("Registry updateComponent on missing entity does not add it", "[Regist
     REQUIRE(results.empty());
 }
 
-TEST_CASE("Registry components filters to intersection", "[Registry]")
+TEST_CASE("ComponentRegistry components filters to intersection", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     // Entity 1: Position + Velocity + Health
     registry.addComponent<Position>(1, {1.0f, 2.0f});
@@ -142,9 +142,9 @@ TEST_CASE("Registry components filters to intersection", "[Registry]")
     REQUIRE(std::get<0>(pvh[0]) == 1);
 }
 
-TEST_CASE("Registry manages independent stores per type", "[Registry]")
+TEST_CASE("ComponentRegistry manages independent stores per type", "[ComponentRegistry]")
 {
-    Registry registry;
+    ComponentRegistry registry;
 
     registry.addComponent<Position>(1, {1.0f, 2.0f});
     registry.addComponent<Velocity>(1, {3.0f, 4.0f});

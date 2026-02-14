@@ -10,7 +10,7 @@
 
 namespace n64::ecs
 {
-    class Registry
+    class ComponentRegistry
     {
     public:
         template <typename... Components>
